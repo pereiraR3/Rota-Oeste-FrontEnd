@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/service/loginService.dart'; // Importando o SideBar
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -123,13 +122,13 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _realizarLogin() {
+  void _realizarLogin() async {
     // Coleta os dados dos campos de input
     String telefone = _telefoneController.text;
     String senha = _senhaController.text;
 
     // Chama o serviço para processar o login e exibe no console
-    _loginService.processarLogin(context, telefone, senha);
+    _loginService.processarLogin( telefone, senha);
   }
 }
 

@@ -1,12 +1,19 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+
+
 class LoginService {
-  void processarLogin(BuildContext context,String telefone, String senha) {
-    // Neste ponto, você pode exibir os dados no console
-    print('Processando login...');
-    print('Telefone: $telefone');
-    print('Senha: $senha');
-    Navigator.pushReplacementNamed(context, '/home');
-    // Aqui dentro vamos fazer requisições HTTPs
+  Future<http.Response> processarLogin(String telefone, String senha ) async{
+    final url = Uri.parse('https://url_do_back/api/login');
+    final corpo = {
+      'telefone': telefone,
+      'senha': senha,
+    };
+    try {
+      final response = await http.post(url, body:corpo);
+      return response;
+    }catch (e) {
+      throw Exception('Erro ao enviar requição : $e');
+    }
   }
 }
