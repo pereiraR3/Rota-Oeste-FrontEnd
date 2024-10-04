@@ -129,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
     String senha = _senhaController.text;
 
     // Chama o serviço para processar o login e exibe no console
-    _loginService.processarLogin(telefone, senha);
+    _loginService.processarLogin(context, telefone, senha);
   }
 }
 
