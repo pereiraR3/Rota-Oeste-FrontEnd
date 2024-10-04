@@ -173,6 +173,7 @@ class BotaoLogin extends StatelessWidget {
     return ElevatedButton(
       onPressed: () {
         // Aqui você pode definir a ação do botão de login
+        Navigator.pushNamed(context, '/home');
       },
       style: ButtonStyle(
         backgroundColor:
