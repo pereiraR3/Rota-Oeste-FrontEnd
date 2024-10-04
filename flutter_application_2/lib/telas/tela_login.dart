@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/service/loginService.dart'; // Importando o SideBar
+import 'package:flutter_application_2/controller/LoginController.dart'; // Importando o SideBar
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -10,7 +10,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _telefoneController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
-  final LoginService _loginService = LoginService(); // Instância do serviço
+  final Logincontroller _loginService = Logincontroller(); // Instância do serviço
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
     String senha = _senhaController.text;
 
     // Chama o serviço para processar o login e exibe no console
-    _loginService.processarLogin( telefone, senha);
+    _loginService.realizarLogin(context, telefone, senha);
   }
 }
 
