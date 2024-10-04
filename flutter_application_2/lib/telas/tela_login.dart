@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
-
-class LoginScreen extends StatelessWidget {
+import 'package:flutter_application_2/controller/LoginController.dart'; // Importando o SideBar
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _telefoneController = TextEditingController();
+  final TextEditingController _senhaController = TextEditingController();
+  final Logincontroller _loginService = Logincontroller(); // Instância do serviço
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +36,83 @@ class LoginScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
-                  ImgLogo(),
-                  TextosTelaLogin(),
-                  InputsLogin(),
-                  BotaoLogin()
+                children: [
+                  const ImgLogo(),
+                  const TextosTelaLogin(),
+                  // Campos de Input
+                  Column(
+                    children: [
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.all(5),
+                        child: const Text(
+                          "Telefone :",
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              decoration: TextDecoration.none),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 250,
+                        child: TextField(
+                          controller: _telefoneController,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color.fromRGBO(240, 231, 16, 80),
+                            hintText: "Digite o telefone",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.all(5),
+                        child: const Text(
+                          "Senha:",
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              decoration: TextDecoration.none),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 250,
+                        child: TextField(
+                          controller: _senhaController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color.fromRGBO(240, 231, 16, 80),
+                            hintText: "Digite a senha",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Botão de Login
+                  ElevatedButton(
+                    onPressed: _realizarLogin,
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                          const Color.fromRGBO(240, 231, 16, 1)),
+                      foregroundColor: MaterialStateProperty.all(Colors.black),
+                      fixedSize: MaterialStateProperty.all(const Size(140, 50)),
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                    ),
+                    child: const Text("Entrar"),
+                  ),
                 ],
               ),
             )
@@ -39,6 +120,15 @@ class LoginScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _realizarLogin() async {
+    // Coleta os dados dos campos de input
+    String telefone = _telefoneController.text;
+    String senha = _senhaController.text;
+
+    // Chama o serviço para processar o login e exibe no console
+    _loginService.realizarLogin(context, telefone, senha);
   }
 }
 
@@ -50,7 +140,7 @@ class ImgLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Image.asset(
-      "img/login.jpg",
+      "img/login.jpg", // Usando a imagem de login
       width: 500,
       height: 600,
       fit: BoxFit.cover,
@@ -65,7 +155,7 @@ class ImgLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(1, 0, 1, 0),
-      child: Image.asset("img/logo.png"),
+      child: Image.asset("img/logo.png"), // Usando a imagem do logo
     );
   }
 }
@@ -100,92 +190,6 @@ class TextosTelaLogin extends StatelessWidget {
           ),
         )
       ],
-    );
-  }
-}
-
-class InputsLogin extends StatelessWidget {
-  const InputsLogin({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.all(5),
-          child: const Text(
-            "Telefone :",
-            style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                decoration: TextDecoration.none),
-          ),
-        ),
-        SizedBox(
-          width: 250,
-          child: TextField(
-            decoration: InputDecoration(
-                filled: true,
-                fillColor: const Color.fromRGBO(240, 231, 16, 80),
-                hintText: "Digite o telefone",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                )),
-          ),
-        ),
-        Container(
-          alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.all(5),
-          child: const Text(
-            "Senha:",
-            style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                decoration: TextDecoration.none),
-          ),
-        ),
-        SizedBox(
-          width: 250,
-          child: TextField(
-            obscureText: true,
-            decoration: InputDecoration(
-                filled: true,
-                fillColor: const Color.fromRGBO(240, 231, 16, 80),
-                hintText: "Digite a senha",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                )),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class BotaoLogin extends StatelessWidget {
-  const BotaoLogin({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // Aqui você pode definir a ação do botão de login
-      },
-      style: ButtonStyle(
-        backgroundColor:
-            MaterialStateProperty.all(const Color.fromRGBO(240, 231, 16, 1)),
-        foregroundColor: MaterialStateProperty.all(Colors.black),
-        fixedSize: MaterialStateProperty.all(const Size(140, 50)),
-        shape: MaterialStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-        ),
-      ),
-      child: const Text("Entrar"),
     );
   }
 }

@@ -1,23 +1,46 @@
 import 'package:flutter/material.dart';
 
-//foto de perfil
-class fotoPerfil extends StatefulWidget {
-  const fotoPerfil({super.key});
+// Widget completo da sidebar que inclui todos os componentes
+class SideBar extends StatelessWidget {
+  const SideBar({super.key});
 
-  @override
-  State<fotoPerfil> createState() => _fotoPerfilState();
-}
-
-class _fotoPerfilState extends State<fotoPerfil> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(30),
+      width: 250,
+      color: Colors.grey[800],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          // Foto de perfil
+          fotoPerfil(),
+          // Espaçamento
+          SizedBox(height: 20),
+          // Botões da sidebar
+          botoes(),
+          // Espaçamento
+          Spacer(),
+          // Botão sair
+          botaoSair(),
+        ],
+      ),
+    );
+  }
+}
+
+// Foto de perfil
+class fotoPerfil extends StatelessWidget {
+  const fotoPerfil({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(30),
       color: const Color.fromRGBO(68, 68, 68, 1),
-      width: 200,
-      height: 200,
-      child: CircleAvatar(
-        radius: 30,
+      width: double.infinity,
+      child: const CircleAvatar(
+        radius: 50,
         backgroundImage: NetworkImage(
             "https://stockcake.com/i/innovative-technology-presentation_1323963_1075486"),
       ),
@@ -25,121 +48,97 @@ class _fotoPerfilState extends State<fotoPerfil> {
   }
 }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//botoes da side bar
-class botoes extends StatefulWidget {
+// Botões da sidebar
+class botoes extends StatelessWidget {
   const botoes({super.key});
 
   @override
-  State<botoes> createState() => _botoesState();
-}
-
-class _botoesState extends State<botoes> {
-  @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          SizedBox(
-            height: 50,
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              child: Text("Home"),
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Color.fromRGBO(60, 60, 60, 1),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
-                    side: BorderSide(color: Colors.white12)),
-              ),
+    return Column(
+      children: [
+        SizedBox(
+          height: 50,
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {},
+            child: const Text("Home"),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: const Color.fromRGBO(60, 60, 60, 1),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero,
+                  side: BorderSide(color: Colors.white12)),
             ),
           ),
-          SizedBox(
-            height: 50,
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              child: Text("CheckLists"),
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Color.fromRGBO(60, 60, 60, 1),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
-                    side: BorderSide(color: Colors.white12)),
-              ),
+        ),
+        SizedBox(
+          height: 50,
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {},
+            child: const Text("CheckLists"),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: const Color.fromRGBO(60, 60, 60, 1),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero,
+                  side: BorderSide(color: Colors.white12)),
             ),
           ),
-          SizedBox(
-            height: 50,
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              child: Text("Relatório"),
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Color.fromRGBO(60, 60, 60, 1),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
-                    side: BorderSide(color: Colors.white12)),
-              ),
+        ),
+        SizedBox(
+          height: 50,
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {},
+            child: const Text("Relatório"),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: const Color.fromRGBO(60, 60, 60, 1),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero,
+                  side: BorderSide(color: Colors.white12)),
             ),
           ),
-          SizedBox(
-            height: 50,
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              child: Text("Contatos"),
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Color.fromRGBO(60, 60, 60, 1),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
-                    side: BorderSide(color: Colors.white12)),
-              ),
+        ),
+        SizedBox(
+          height: 50,
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {},
+            child: const Text("Contatos"),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: const Color.fromRGBO(60, 60, 60, 1),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero,
+                  side: BorderSide(color: Colors.white12)),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//botão sair da side bar
-class botaoSair extends StatefulWidget {
+// Botão sair da sidebar
+class botaoSair extends StatelessWidget {
   const botaoSair({super.key});
 
   @override
-  State<botaoSair> createState() => _botaoSairState();
-}
-
-class _botaoSairState extends State<botaoSair> {
-  @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(10),
       child: ElevatedButton(
-        onPressed: () {},
-        child: Text("Sair"),
+        onPressed: () {
+          Navigator.pushReplacementNamed(context, '/login');
+        },
+        child: const Text("Sair"),
         style: ElevatedButton.styleFrom(
             foregroundColor: Colors.black,
-            backgroundColor: Color.fromRGBO(240, 231, 16, 1),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
+            backgroundColor: const Color.fromRGBO(240, 231, 16, 1),
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
       ),
     );
   }
