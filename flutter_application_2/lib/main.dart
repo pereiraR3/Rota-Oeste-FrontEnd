@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/telas/tela_busca.dart';
 import 'telas/tela_login.dart'; // Importando a tela principal
 import 'telas/tela_inicial.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -20,6 +22,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => const LoginScreen(), // Rota para a tela de login
         '/home': (context) => const ChecklistScreen(),
+        '/telabusca': (context) => const TelaBuscaScreen(),
       },
     );
   }

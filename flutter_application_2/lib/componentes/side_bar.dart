@@ -105,7 +105,9 @@ class botoes extends StatelessWidget {
           height: 50,
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/telabusca');
+            },
             child: const Text("Contatos"),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
@@ -138,7 +140,8 @@ class botaoSair extends StatelessWidget {
         style: ElevatedButton.styleFrom(
             foregroundColor: Colors.black,
             backgroundColor: const Color.fromRGBO(240, 231, 16, 1),
-            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
+            shape:
+                const RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
       ),
     );
   }
