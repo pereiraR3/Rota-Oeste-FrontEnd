@@ -90,7 +90,9 @@ class botoes extends StatelessWidget {
           height: 50,
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/relatorio');
+            },
             child: const Text("Relatório"),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
