@@ -103,7 +103,7 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
                   // Container maior com o checklist e o campo de busca
                   Container(
                     width: 800,
-                    height: 550,
+                    height: 500,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: Color.fromRGBO(117, 117, 117, 1),
