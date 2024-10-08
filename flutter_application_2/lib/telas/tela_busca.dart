@@ -1,7 +1,7 @@
-// ignore_for_file: prefer_const_constructors, prefer_final_fields, avoid_unnecessary_containers, library_private_types_in_public_api, sized_box_for_whitespace, camel_case_types, sort_child_properties_last
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/componentes/side_bar.dart';
+import 'package:http/http.dart' as http;
 
 class TelaBuscaScreen extends StatefulWidget {
   const TelaBuscaScreen({super.key});
@@ -21,7 +21,7 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
   List<String?> _selectedItems = [null, null, null];
 
   // Lista de contatos (nome da segunda coluna)
-  List<String> contatos = ['Fulano 1', 'Fulano 2', 'Fulano 3'];
+  List<String> contatos = [];
 
   // Controlador do campo de busca
   TextEditingController _searchController = TextEditingController();
@@ -32,8 +32,28 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
   @override
   void initState() {
     super.initState();
-    // Inicialmente, a lista filtrada é igual à lista original de contatos
-    filteredContatos = contatos;
+    _fetchData(); // Chama a função para buscar dados
+  }
+
+  // Função para buscar dados do Mocky
+  Future<void> _fetchData() async {
+    final response = await http.get(Uri.parse(
+        'https://run.mocky.io/v3/9f773dec-a495-48cc-9c47-f00a67d090fc'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = json.decode(response.body);
+
+      // Populando as listas com os dados retornados
+      setState(() {
+        contatos =
+            jsonData.map((contact) => contact['name'] as String).toList();
+        dropdownItems =
+            jsonData.map((contact) => contact['option'] as String).toList();
+        filteredContatos = contatos; // Inicializa a lista filtrada
+      });
+    } else {
+      throw Exception('Failed to load data');
+    }
   }
 
   // Função que atualiza a lista de contatos com base na busca
@@ -199,14 +219,6 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
                               },
                             ),
                           ),
-                          ElevatedButton(
-                              onPressed: () {},
-                              child: Text('Enviar'),
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.black,
-                                backgroundColor:
-                                    const Color.fromRGBO(240, 231, 16, 1),
-                              ))
                         ],
                       ),
                     ),
