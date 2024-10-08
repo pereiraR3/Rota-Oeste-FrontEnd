@@ -98,37 +98,44 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
                     child: Column(
                       children: [
                         // Cabeçalho
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Expanded(
-                              child: Center(
-                                child: Text('Nome do Relatório',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Color.fromRGBO(240, 231, 16, 1),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Expanded(
+                                child: Center(
+                                  child: Text('Nome do Relatório',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                ),
                               ),
-                            ),
-                            Expanded(
-                              child: Center(
-                                child: Text('Quantidade de Questões',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                              Expanded(
+                                child: Center(
+                                  child: Text('Quantidade de Questões',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                ),
                               ),
-                            ),
-                            Expanded(
-                              child: Center(
-                                child: Text('Data de Criação',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                              Expanded(
+                                child: Center(
+                                  child: Text('Data de Criação',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                ),
                               ),
-                            ),
-                            Expanded(
-                              child: Center(
-                                  child: Text('')), // Coluna vazia para o botão
-                            ),
-                          ],
+                              Expanded(
+                                child: Center(
+                                    child:
+                                        Text('')), // Coluna vazia para o botão
+                              ),
+                            ],
+                          ),
                         ),
-                        Divider(),
+                        // Divider(),
                         // Campos descritivos dos checklists
                         Expanded(
                           child: ListView.builder(
@@ -143,7 +150,7 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
                               return Column(
                                 children: [
                                   SizedBox(
-                                      height: 7), // Espaçamento acima do item
+                                      height: 15), // Espaçamento acima do item
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
@@ -177,14 +184,21 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
                                             onPressed: () {
                                               // Ação para abrir o relatório
                                             },
+                                            style: ElevatedButton.styleFrom(
+                                                foregroundColor: Colors.black,
+                                                backgroundColor:
+                                                    const Color.fromRGBO(
+                                                        240, 231, 16, 1),
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.zero)),
                                             child: Text('Gerar'),
                                           ),
                                         ),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
-                                      height: 7), // Espaçamento abaixo do item
                                 ],
                               );
                             },
@@ -205,6 +219,11 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
                                         });
                                       }
                                     : null,
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.black,
+                                  backgroundColor:
+                                      const Color.fromRGBO(240, 231, 16, 1),
+                                ),
                                 child: Text('Anterior'),
                               ),
                               Text(
@@ -218,6 +237,11 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
                                         });
                                       }
                                     : null,
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.black,
+                                  backgroundColor:
+                                      const Color.fromRGBO(240, 231, 16, 1),
+                                ),
                                 child: Text('Próxima'),
                               ),
                             ],
