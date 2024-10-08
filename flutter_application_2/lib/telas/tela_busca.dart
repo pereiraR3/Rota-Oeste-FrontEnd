@@ -38,7 +38,7 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
   // Função para buscar dados do Mocky
   Future<void> _fetchData() async {
     final response = await http.get(Uri.parse(
-        'https://run.mocky.io/v3/9f773dec-a495-48cc-9c47-f00a67d090fc'));
+        'https://run.mocky.io/v3/94994a85-409b-4537-9014-27774d26dce3'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = json.decode(response.body);
