@@ -21,6 +21,7 @@ analyzer:
     prefer_final_fields: ignore
     avoid_unnecessary_containers: ignore
     sized_box_for_whitespace: ignore
+    prefer_const_literals_to_create_immutables: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:
