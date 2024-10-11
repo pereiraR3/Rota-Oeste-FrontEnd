@@ -14,7 +14,7 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
   List<dynamic> relatorios = [];
   List<dynamic> filteredRelatorios = [];
   int currentPage = 0;
-  final int itemsPerPage = 6;
+  final int itemsPerPage = 7;
   String searchQuery = "";
 
   @override
@@ -57,6 +57,7 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
       body: Row(
         children: [
@@ -89,8 +90,8 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
                   ),
                   SizedBox(height: 20),
                   Container(
-                    width: 700,
-                    height: 400,
+                    width: screenSize.width * 0.7,
+                    height: screenSize.height * 0.7,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       border: Border.all(color: Colors.black, width: 2),

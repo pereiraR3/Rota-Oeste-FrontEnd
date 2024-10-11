@@ -74,6 +74,7 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
       body: Row(
         children: [
@@ -102,8 +103,8 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
 
                   // Container maior com o checklist e o campo de busca
                   Container(
-                    width: 800,
-                    height: 500,
+                    width: screenSize.width * 0.5, // 80% da largura da tela
+                    height: screenSize.height * 0.8, // 80% da altura da tela
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: Color.fromRGBO(117, 117, 117, 1),
@@ -131,9 +132,7 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
                               },
                             ),
                           ),
-                          SizedBox(
-                              height:
-                                  20), // Espaço entre o campo de busca e a lista
+                          SizedBox(height: 20),
 
                           // Lista de checklists filtrada
                           Expanded(
@@ -144,8 +143,7 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 10.0),
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       // Primeira Coluna: Checkbox
                                       Checkbox(
@@ -219,6 +217,15 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
                               },
                             ),
                           ),
+                          ElevatedButton(
+                            onPressed: () {},
+                            child: Text("Enviar"),
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.black,
+                              backgroundColor:
+                                  const Color.fromRGBO(240, 231, 16, 1),
+                            ),
+                          )
                         ],
                       ),
                     ),
