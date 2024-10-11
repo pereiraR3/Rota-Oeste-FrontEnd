@@ -22,6 +22,8 @@ analyzer:
     avoid_unnecessary_containers: ignore
     sized_box_for_whitespace: ignore
     prefer_const_literals_to_create_immutables: ignore
+    use_key_in_widget_constructors: ignore
+    use_super_parameters: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:
