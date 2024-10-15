@@ -77,7 +77,9 @@ class botoes extends StatelessWidget {
           height: 50,
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/checklist');
+            },
             child: const Text("CheckLists"),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
