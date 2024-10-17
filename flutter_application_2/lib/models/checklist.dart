@@ -1,3 +1,4 @@
+import 'package:flutter_application_2/models/clienteRcheckList.dart';
 import 'package:flutter_application_2/models/questao.dart';
 import 'package:flutter_application_2/models/usuario.dart';
 
