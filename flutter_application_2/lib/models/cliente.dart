@@ -1,3 +1,7 @@
+import 'package:flutter_application_2/models/clienteRcheckList.dart';
+import 'package:flutter_application_2/models/interacao.dart';
+import 'package:flutter_application_2/models/usuario.dart';
+
 class Cliente {
   final int id;
   final int usuarioId;

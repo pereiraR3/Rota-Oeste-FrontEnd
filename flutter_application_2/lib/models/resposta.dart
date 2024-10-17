@@ -1,3 +1,7 @@
+import 'package:flutter_application_2/models/interacao.dart';
+import 'package:flutter_application_2/models/questao.dart';
+import 'package:flutter_application_2/models/respostaTemAlternativa.dart';
+
 class Resposta {
   final int id;
   final int questaoId;

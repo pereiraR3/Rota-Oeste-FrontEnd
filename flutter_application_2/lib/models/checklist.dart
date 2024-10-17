@@ -1,3 +1,6 @@
+import 'package:flutter_application_2/models/questao.dart';
+import 'package:flutter_application_2/models/usuario.dart';
+
 class CheckList {
   final int id;
   final int usuarioId;

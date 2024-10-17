@@ -1,47 +1,32 @@
 import 'package:flutter_application_2/models/checklist.dart';
 import 'package:flutter_application_2/models/cliente.dart';
-import 'package:flutter_application_2/models/resposta.dart';
 
-class Interacao {
-  final int id;
+class ClienteRespondeCheckList {
   final int clienteId;
   final int checkListId;
-  final bool status;
   final Cliente cliente;
   final CheckList checkList;
-  final List<Resposta>? respostaAlternativaModels;
 
-  Interacao({
-    required this.id,
+  ClienteRespondeCheckList({
     required this.clienteId,
     required this.checkListId,
-    required this.status,
     required this.cliente,
     required this.checkList,
-    this.respostaAlternativaModels,
   });
 
-  factory Interacao.fromJson(Map<String, dynamic> json) {
-    return Interacao(
-      id: json['id'],
+  factory ClienteRespondeCheckList.fromJson(Map<String, dynamic> json) {
+    return ClienteRespondeCheckList(
       clienteId: json['clienteId'],
       checkListId: json['checkListId'],
-      status: json['status'],
       cliente: Cliente.fromJson(json['cliente']),
       checkList: CheckList.fromJson(json['checkList']),
-      respostaAlternativaModels: (json['respostaAlternativaModels'] as List<dynamic>?)
-          ?.map((item) => Resposta.fromJson(item))
-          .toList(),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
         'clienteId': clienteId,
         'checkListId': checkListId,
-        'status': status,
         'cliente': cliente.toJson(),
         'checkList': checkList.toJson(),
-        'respostaAlternativaModels': respostaAlternativaModels?.map((item) => item.toJson()).toList(),
       };
 }

@@ -1,3 +1,7 @@
+import 'package:flutter_application_2/models/alternativa.dart';
+import 'package:flutter_application_2/models/checklist.dart';
+import 'package:flutter_application_2/models/resposta.dart';
+
 class Questao {
   final int id;
   final int checkListId;

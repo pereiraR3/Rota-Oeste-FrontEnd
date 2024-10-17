@@ -1,3 +1,6 @@
+import 'package:flutter_application_2/models/alternativa.dart';
+import 'package:flutter_application_2/models/resposta.dart';
+
 class RespostaTemAlternativa {
   final int respostaId;
   final int alternativaId;

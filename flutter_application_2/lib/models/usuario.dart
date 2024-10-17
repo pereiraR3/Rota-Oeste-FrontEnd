@@ -1,3 +1,6 @@
+import 'package:flutter_application_2/models/checklist.dart';
+import 'package:flutter_application_2/models/cliente.dart';
+
 class Usuario {
   final int id;
   final String? telefone;
