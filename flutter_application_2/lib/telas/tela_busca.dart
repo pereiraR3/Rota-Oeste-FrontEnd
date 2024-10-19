@@ -24,7 +24,7 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
   List<bool> _isChecked = [false, false, false];
 
   // Lista de opções para o DropdownButton
-List<DropdownMenuItem<int>> dropdownItems = [];
+List<DropdownMenuItem<String>> dropdownItems = [];
 
   // Lista que guarda a opção selecionada de cada linha
   List<String?> _selectedItems = [null, null, null];
@@ -50,9 +50,9 @@ List<DropdownMenuItem<int>> dropdownItems = [];
       final checklist = await _checklistservice.getCheckList();
       setState(() {
            dropdownItems = checklist.map((checklist) {
-        return DropdownMenuItem<int>(
-          value: checklist.id, // Armazena o ID do checklist
-          child: Text(checklist.nome ?? 'sem nome'), // Exibe o nome do checklist
+        return DropdownMenuItem<String>(
+          value: checklist.id.toString(), // Armazena o ID do checklist
+          child: Text(checklist.nome ?? ''), // Exibe o nome do checklist
         );
       }).toList();
 
@@ -225,17 +225,7 @@ List<DropdownMenuItem<int>> dropdownItems = [];
                                               ),
                                               value: _selectedItems[index] ?? '',
                                               dropdownColor: Colors.grey[800],
-                                              items: dropdownItems
-                                                  .map((String item) {
-                                                return DropdownMenuItem<String>(
-                                                  value: item,
-                                                  child: Text(
-                                                    item,
-                                                    style: TextStyle(
-                                                        color: Colors.white),
-                                                  ),
-                                                );
-                                              }).toList(),
+                                              items: dropdownItems,
                                               onChanged: (String? newValue) {
                                                 setState(() {
                                                   _selectedItems[index] =
