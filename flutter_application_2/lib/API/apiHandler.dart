@@ -9,7 +9,6 @@ class ApiHandler {
     final response = await http.get(Uri.parse('$endpoint'));
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = json.decode(response.body);
-      print(jsonData);
       return jsonData.map((json) => fromJson(json)).toList();
     } else {
       throw Exception("Erro ao buscar dados");

@@ -11,7 +11,7 @@ class ClienteService {
 
   // Adicionar um novo cliente
   Future<Cliente> adicionarCliente(Cliente cliente) async {
-    return apiHandler.post('', cliente.toJson(), (json) => Cliente.fromJson(json));
+    return apiHandler.post('cliente/adicionar', cliente.toJson(), (json) => Cliente.fromJson(json));
   }
 
   // Atualizar um cliente existente
