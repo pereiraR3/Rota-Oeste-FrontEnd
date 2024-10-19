@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/componentes/side_bar.dart';
 import 'package:http/http.dart' as http;
+import '../models/cliente.dart'; // Modelo de Cliente
+import '../service/clienteService.dart';
+
 
 class TelaBuscaScreen extends StatefulWidget {
   const TelaBuscaScreen({super.key});
@@ -11,6 +14,8 @@ class TelaBuscaScreen extends StatefulWidget {
 }
 
 class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
+  final ClienteService _clienteService = ClienteService();
+  List<Cliente> _clientes = [];
   // Lista de seleção para o Checkbox
   List<bool> _isChecked = [false, false, false];
 
@@ -37,22 +42,26 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
 
   // Função para buscar dados do Mocky
   Future<void> _fetchData() async {
-    final response = await http.get(Uri.parse(
-        'https://run.mocky.io/v3/94994a85-409b-4537-9014-27774d26dce3'));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonData = json.decode(response.body);
-
-      // Populando as listas com os dados retornados
+    try {
+      final clientes = await _clienteService.getClientes();
       setState(() {
-        contatos =
-            jsonData.map((contact) => contact['name'] as String).toList();
-        dropdownItems =
-            jsonData.map((contact) => contact['option'] as String).toList();
-        filteredContatos = contatos; // Inicializa a lista filtrada
+        _clientes = clientes;
+        // Preencher a lista de contatos com os nomes dos clientes retornados
+        contatos = clientes
+        .map((cliente) => cliente.nome ?? '')
+        .where((nome) => nome.isNotEmpty) // Filtra para não ter strings vazias
+        .toList();
+        // Atualizar a lista filtrada inicialmente com todos os contatos
+        filteredContatos = contatos;
+        _isChecked = List<bool>.filled(clientes.length, false);
+      _selectedItems = List<String?>.filled(clientes.length, null);
       });
-    } else {
-      throw Exception('Failed to load data');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao buscar clientes: $e'),
+        ),
+      );
     }
   }
 
