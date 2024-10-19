@@ -4,6 +4,7 @@ import 'package:flutter_application_2/componentes/side_bar.dart';
 import 'package:http/http.dart' as http;
 import '../models/cliente.dart'; // Modelo de Cliente
 import '../service/clienteService.dart';
+import '../service/checklistService.dart';
 
 
 class TelaBuscaScreen extends StatefulWidget {
@@ -16,11 +17,14 @@ class TelaBuscaScreen extends StatefulWidget {
 class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
   final ClienteService _clienteService = ClienteService();
   List<Cliente> _clientes = [];
+  final Checklistservice _checklistservice = Checklistservice();
+  List<Map<String, dynamic>> _checklists = [];
+
   // Lista de seleção para o Checkbox
   List<bool> _isChecked = [false, false, false];
 
   // Lista de opções para o DropdownButton
-  List<String> dropdownItems = ['freio da disco', 'embreagem', 'volante'];
+List<DropdownMenuItem<int>> dropdownItems = [];
 
   // Lista que guarda a opção selecionada de cada linha
   List<String?> _selectedItems = [null, null, null];
@@ -37,11 +41,33 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchData(); // Chama a função para buscar dados
+    _fetchDataClientes(); // Chama a função para buscar dados
+    _fetchDataCheck();
+  }
+  
+  Future<void> _fetchDataCheck() async {
+    try {
+      final checklist = await _checklistservice.getCheckList();
+      setState(() {
+           dropdownItems = checklist.map((checklist) {
+        return DropdownMenuItem<int>(
+          value: checklist.id, // Armazena o ID do checklist
+          child: Text(checklist.nome ?? 'sem nome'), // Exibe o nome do checklist
+        );
+      }).toList();
+
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao buscar clientes: $e'),
+        ),
+      );
+    }
   }
 
   // Função para buscar dados do Mocky
-  Future<void> _fetchData() async {
+  Future<void> _fetchDataClientes() async {
     try {
       final clientes = await _clienteService.getClientes();
       setState(() {
@@ -197,7 +223,7 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
                                                 style: TextStyle(
                                                     color: Colors.white),
                                               ),
-                                              value: _selectedItems[index],
+                                              value: _selectedItems[index] ?? '',
                                               dropdownColor: Colors.grey[800],
                                               items: dropdownItems
                                                   .map((String item) {

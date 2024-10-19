@@ -5,22 +5,22 @@ class Checklistservice {
   final ApiHandler apiHandler = ApiHandler();
 
   // Buscar todos os clientes
-  Future<List<CheckList>> getClientes() async {
+  Future<List<CheckList>> getCheckList() async {
     return apiHandler.get('checklist/buscarTodos', (json) => CheckList.fromJson(json));
   }
 
   // Adicionar um novo cliente
-  Future<CheckList> adicionarCliente(CheckList checklist) async {
+  Future<CheckList> adicionarChecklist(CheckList checklist) async {
     return apiHandler.post('', checklist.toJson(), (json) => CheckList.fromJson(json));
   }
 
   // Atualizar um cliente existente
-  Future<void> atualizarCliente(int id, CheckList checklist) async {
+  Future<void> atualizarChecklist(int id, CheckList checklist) async {
     return apiHandler.put('/check', id, checklist.toJson());
   }
 
   // Deletar um cliente
-  Future<void> deletarCliente(int id) async {
+  Future<void> deletarChecklist(int id) async {
     return apiHandler.delete('/check', id);
   }
 }

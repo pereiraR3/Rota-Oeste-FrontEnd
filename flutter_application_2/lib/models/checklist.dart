@@ -25,7 +25,7 @@ class CheckList {
     return CheckList(
       id: json['id'],
       usuarioId: json['usuarioId'],
-      nome: json['nome'],
+      nome: json['nome'] ?? '',
       dataCriacao: json['dataCriacao'],
       questoes: (json['questoes'] as List<dynamic>?)
           ?.map((item) => Questao.fromJson(item))
