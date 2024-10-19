@@ -2,13 +2,14 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiHandler {
-  final String baseUrl = "http://localhost:3000"; // URL do JSON Server
+  final String baseUrl = "http://localhost:3000"; // url padrao
 
   // Método GET
   Future<List<T>> get<T>(String endpoint, T Function(Map<String, dynamic>) fromJson) async {
-    final response = await http.get(Uri.parse('$baseUrl/$endpoint'));
+    final response = await http.get(Uri.parse('$endpoint'));
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = json.decode(response.body);
+      print(jsonData);
       return jsonData.map((json) => fromJson(json)).toList();
     } else {
       throw Exception("Erro ao buscar dados");

@@ -6,7 +6,7 @@ class ClienteService {
 
   // Buscar todos os clientes
   Future<List<Cliente>> getClientes() async {
-    return apiHandler.get('https://run.mocky.io/v3/7c6ed9d2-9093-4c45-9768-a99e0a5e55f7', (json) => Cliente.fromJson(json));
+    return apiHandler.get('https://run.mocky.io/v3/ac84cd48-34a6-4523-8aa0-44f8fea03051', (json) => Cliente.fromJson(json));
   }
 
   // Adicionar um novo cliente
