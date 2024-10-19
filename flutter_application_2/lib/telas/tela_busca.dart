@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/componentes/side_bar.dart';
+import 'package:flutter_application_2/models/checklist.dart';
 import 'package:http/http.dart' as http;
 import '../models/cliente.dart'; // Modelo de Cliente
 import '../service/clienteService.dart';
@@ -17,9 +18,9 @@ class TelaBuscaScreen extends StatefulWidget {
 class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
   final ClienteService _clienteService = ClienteService();
   List<Cliente> _clientes = [];
-  final Checklistservice _checklistservice = Checklistservice();
+   Checklistservice _checklistservice = Checklistservice();
   List<Map<String, dynamic>> _checklists = [];
-
+  late List<CheckList> data = [];
   // Lista de seleção para o Checkbox
   List<bool> _isChecked = [false, false, false];
 
@@ -42,29 +43,10 @@ List<DropdownMenuItem<String>> dropdownItems = [];
   void initState() {
     super.initState();
     _fetchDataClientes(); // Chama a função para buscar dados
-    _fetchDataCheck();
+    _fetchDataChecklists();
   }
   
-  Future<void> _fetchDataCheck() async {
-    try {
-      final checklist = await _checklistservice.getCheckList();
-      setState(() {
-           dropdownItems = checklist.map((checklist) {
-        return DropdownMenuItem<String>(
-          value: checklist.id.toString(), // Armazena o ID do checklist
-          child: Text(checklist.nome ?? ''), // Exibe o nome do checklist
-        );
-      }).toList();
 
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erro ao buscar clientes: $e'),
-        ),
-      );
-    }
-  }
 
   // Função para buscar dados do Mocky
   Future<void> _fetchDataClientes() async {
@@ -86,6 +68,29 @@ List<DropdownMenuItem<String>> dropdownItems = [];
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Erro ao buscar clientes: $e'),
+        ),
+      );
+    }
+  }
+  Future<void> _fetchDataChecklists() async {
+    try {
+      final checklists = await _checklistservice.getCheckLists();
+      setState(() {
+        // Armazenar os dados retornados
+        data = checklists;
+        print(data);
+        // Preencher dropdownItems com os nomes dos checklists
+        dropdownItems = checklists
+            .map((checklist) => DropdownMenuItem<String>(
+                  value: checklist.id.toString(), // Use o ID como valor
+                  child: Text(checklist.nome ?? "Nome não informado"),
+                ))
+            .toList();
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao buscar checklists: $e'),
         ),
       );
     }
@@ -217,22 +222,29 @@ List<DropdownMenuItem<String>> dropdownItems = [];
                                             ),
 
                                             // Terceira Coluna: DropdownButton
-                                            DropdownButton<String>(
-                                              hint: Text(
-                                                "Selecione",
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                              value: _selectedItems[index] ?? '',
-                                              dropdownColor: Colors.grey[800],
-                                              items: dropdownItems,
-                                              onChanged: (String? newValue) {
-                                                setState(() {
-                                                  _selectedItems[index] =
-                                                      newValue;
-                                                });
-                                              },
-                                            ),
+                                           DropdownButton<String>(
+                                                    hint: Text(
+                                                      "Selecione",
+                                                      style: TextStyle(color: Colors.white),
+                                                    ),
+                                                    value: dropdownItems.isNotEmpty && _selectedItems[index] != null && dropdownItems.any((item) => item.value == _selectedItems[index])
+                                                        ? _selectedItems[index]
+                                                        : null, // Verifica se o valor selecionado está presente nos itens
+                                                    dropdownColor: Colors.grey[800],
+                                                    items: dropdownItems.isNotEmpty
+                                                        ? dropdownItems
+                                                        : [
+                                                            DropdownMenuItem(
+                                                              value: '',
+                                                              child: Text('Nenhuma opção disponível'),
+                                                            ),
+                                                          ],
+                                                    onChanged: (String? newValue) {
+                                                      setState(() {
+                                                        _selectedItems[index] = newValue;
+                                                      });
+                                                    },
+                                                  ),
                                           ],
                                         ),
                                       )

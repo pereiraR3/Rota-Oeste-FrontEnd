@@ -5,15 +5,26 @@ class ApiHandler {
   final String baseUrl = "https://rotaoeste.free.beeceptor.com/"; // url padrao
 
   // Método GET
-  Future<List<T>> get<T>(String endpoint, T Function(Map<String, dynamic>) fromJson) async {
-    final response = await http.get(Uri.parse('$endpoint'));
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonData = json.decode(response.body);
-      return jsonData.map((json) => fromJson(json)).toList();
+Future<List<T>> get<T>(String endpoint, T Function(Map<String, dynamic>) fromJson) async {
+  final response = await http.get(Uri.parse('$endpoint'));
+  if (response.statusCode == 200) {
+    final List<dynamic> jsonData = json.decode(response.body);
+    // Verificando se todos os itens são do tipo Map<String, dynamic>
+    if (jsonData is List && jsonData.every((item) => item is Map<String, dynamic>)) {
+      return jsonData.map((json) => fromJson(json as Map<String, dynamic>)).toList();
     } else {
-      throw Exception("Erro ao buscar dados");
+      throw Exception("Dados de resposta inválidos");
     }
+  } else {
+    throw Exception("Erro ao buscar dados: ${response.statusCode}");
   }
+}
+
+
+
+
+
+
 
   // Método POST
   Future<T> post<T>(String endpoint, Map<String, dynamic> data, T Function(Map<String, dynamic>) fromJson) async {

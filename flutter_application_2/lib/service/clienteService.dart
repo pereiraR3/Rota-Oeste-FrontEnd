@@ -6,8 +6,20 @@ class ClienteService {
 
   // Buscar todos os clientes
   Future<List<Cliente>> getClientes() async {
-    return apiHandler.get('cliente/buscarTodos', (json) => Cliente.fromJson(json));
+      final response = await apiHandler.get('https://run.mocky.io/v3/ac84cd48-34a6-4523-8aa0-44f8fea03051', (json) {
+      
+    if (json != null && json is Map<String, dynamic>) {
+      return Cliente.fromJson(json);
+    } else {
+      throw Exception("Dados de cliente inválidos ou nulos");
+    }
+  });
+if (response != null && response is List<Cliente>) {
+    return response;
+  } else {
+    throw Exception("A resposta não contém uma lista de clientes válida");
   }
+    }
 
   // Adicionar um novo cliente
   Future<Cliente> adicionarCliente(Cliente cliente) async {
