@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiHandler {
-  final String baseUrl = "http://localhost:3000"; // url padrao
+  final String baseUrl = "https://rotaoeste.free.beeceptor.com/"; // url padrao
 
   // Método GET
   Future<List<T>> get<T>(String endpoint, T Function(Map<String, dynamic>) fromJson) async {
