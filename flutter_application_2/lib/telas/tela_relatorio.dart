@@ -41,7 +41,7 @@ Future<void> fetchTodasInteracoes() async {
     if (response.statusCode == 200) {
       
       final data = json.decode(response.body);
-print(data);
+
 if (data != null && data is List) {
   setState(() {
     relatorios = data.map((item) {
