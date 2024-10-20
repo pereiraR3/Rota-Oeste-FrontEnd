@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart'; // Adicionar dependência
+import '../telas/tela_inicial.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -34,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse('https://run.mocky.io/v3/07ae9787-3f03-4656-ac2e-876b9e487147'),
+        Uri.parse('https://run.mocky.io/v3/6ec762ec-18b4-499e-ae8d-68ed2fc24496'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -47,9 +49,18 @@ class _LoginScreenState extends State<LoginScreen> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final String token = data['accessToken'];
+        // Salva o token em SharedPreferences para uso posterior
+       // final prefs = await SharedPreferences.getInstance();
+       // await prefs.setString('token', token);
 
-        // Salve o token e navegue para a próxima tela
-        Navigator.pushReplacementNamed(context, '/home');
+        // Navegar para a tela inicial passando o token
+       Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(
+    builder: (context) => ClientChecklistScreen(token: token),
+  ),
+);
+
       } else {
         // Exibir mensagem de erro caso o login falhe
         ScaffoldMessenger.of(context).showSnackBar(

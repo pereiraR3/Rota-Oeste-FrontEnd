@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 // Widget completo da sidebar que inclui todos os componentes
 class SideBar extends StatelessWidget {
-  const SideBar({super.key});
+  final String token;
+
+  const SideBar({super.key, required this.token});
 
   @override
   Widget build(BuildContext context) {
@@ -12,17 +14,17 @@ class SideBar extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           // Foto de perfil
-          fotoPerfil(),
+          const fotoPerfil(),
           // Espaçamento
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           // Botões da sidebar
-          botoes(),
+          botoes(token: token),
           // Espaçamento
-          Spacer(),
+          const Spacer(),
           // Botão sair
-          botaoSair(),
+          const botaoSair(),
         ],
       ),
     );
@@ -50,7 +52,9 @@ class fotoPerfil extends StatelessWidget {
 
 // Botões da sidebar
 class botoes extends StatelessWidget {
-  const botoes({super.key});
+  final String token;
+
+  const botoes({super.key, required this.token});
 
   @override
   Widget build(BuildContext context) {

@@ -6,7 +6,8 @@ import '../models/cliente.dart'; // Modelo de Cliente
 
 
 class TelaBuscaScreen extends StatefulWidget {
-  const TelaBuscaScreen({super.key});
+  final String token;
+  const TelaBuscaScreen({super.key, required this.token});
 
   @override
   _TelaBuscaScreenState createState() => _TelaBuscaScreenState();
@@ -61,7 +62,7 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
     return Scaffold(
       body: Row(
         children: [
-          SideBar(),
+          SideBar(token: widget.token),
           Expanded(
             child: Container(
               child: Column(

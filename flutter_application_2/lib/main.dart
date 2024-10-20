@@ -25,8 +25,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/login', // Definindo a rota inicial como a HomeScreen
       routes: {
         '/login': (context) => const LoginScreen(), // Rota para a tela de login
-        '/home': (context) => const ChecklistScreen(),
-        '/telabusca': (context) => const TelaBuscaScreen(),
+        
         '/relatorio': (context) => const RelatorioScreen(),
         '/checklist': (context) => TelaCriacaoChecklist(),
       },
