@@ -47,8 +47,7 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
       throw Exception('Erro ao carregar clientes');
     }
   }
-//https://run.mocky.io/v3/4d364006-466d-4d0c-bdd9-b81db57f5255
-//interacao ---  https://run.mocky.io/v3/f8ec33c1-7416-436e-be16-16ff924e5656
+
   Future<List<dynamic>> fetchChecklists() async {
     // Simulando a busca de checklists
     final response = await http.get(

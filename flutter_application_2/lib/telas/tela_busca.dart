@@ -19,15 +19,16 @@ class TelaBuscaScreen extends StatefulWidget {
 
 
 class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
-  
   // Lista de seleção para o Checkbox
-  List<bool> _isChecked = [false, false, false];
+  List<bool> _isChecked = [];
 
   // Lista de opções para o DropdownButton
   List<String> dropdownItems = [];
+  List<dynamic> listaClientes = [];
   List<dynamic> listaChecklist = [];
+  
   // Lista que guarda a opção selecionada de cada linha
-  List<String?> _selectedItems = [null, null, null];
+  List<String?> _selectedItems = [];
 
   // Lista de contatos (nome da segunda coluna)
   List<String> contatos = [];
@@ -41,50 +42,87 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
   @override
   void initState() {
     super.initState();
+    fetchAllClientes();
+    fetchAllChecklist();
   }
-Future<void> fetchAllChecklist() async{
-  try {
-     final response = await http.get(
-      Uri.parse('https://run.mocky.io/v3/9a95e9c2-ec21-40d4-83ff-e3d6e90d5295'),
-      headers: {
-        'Authorization': 'Bearer ${widget.token}',
-        'Content-Type': 'application/json',
-      },
-    );
-    if (response.statusCode == 200){
-      final data = json.decode(response.body);
-      if (data != null && data is List){
 
-        setState(() {
-          listaChecklist = data.map((item){
-            String titulo = item['nome'] ?? 'Sem checkList';
-            
-            return {'titulo':titulo};
-          }).toList();
-           dropdownItems = listaChecklist.map((item) {
-            return item['titulo'] as String;
-          }).toList();
-        });
+  Future<void> fetchAllChecklist() async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://run.mocky.io/v3/9a95e9c2-ec21-40d4-83ff-e3d6e90d5295'),
+        headers: {
+          'Authorization': 'Bearer ${widget.token}',
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print(data);
+        if (data != null && data is List) {
+          setState(() {
+            listaChecklist = data.map((item) {
+              String titulo = item['nome'] ?? 'Sem checklist';
+              return {'titulo': titulo};
+            }).toList();
 
+            dropdownItems = listaChecklist.map((item) {
+              return item['titulo'] as String;
+            }).toList();
+          });
+        }
       }
+    } catch (e) {
+      print("Erro: $e");
+      throw Exception('Erro ao carregar checklists');
     }
-  } catch (e) {
-    print("Erro: $e");
-    throw Exception('Erro ao carregar interações');
   }
-}
-  // Função para buscar dados do Mocky
- 
-  // Função que atualiza a lista de contatos com base na busca
+
+  Future<void> fetchAllClientes() async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://run.mocky.io/v3/c1241b4c-b1f7-49cc-82ef-92a8d1a32413'),
+        headers: {
+          'Authorization': 'Bearer ${widget.token}',
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data != null && data is List) {
+          setState(() {
+            listaClientes = data.map((item) {
+              String nome = item['nome'] ?? 'Sem contatos';
+              return {'nome': nome};
+            }).toList();
+
+            // Atualiza a lista de contatos com os nomes
+            contatos = listaClientes.map((item) {
+              return item['nome'] as String;
+            }).toList();
+
+            // Inicializa as listas de controle de seleção e dropdown
+            _isChecked = List<bool>.filled(contatos.length, false);
+            _selectedItems = List<String?>.filled(contatos.length, null);
+            
+            // Inicializa a lista filtrada com todos os contatos
+            filteredContatos = List.from(contatos);
+          });
+        }
+      }
+    } catch (e) {
+      print("Erro: $e");
+      throw Exception('Erro ao carregar clientes');
+    }
+  }
+
   void _filterContatos(String query) {
     List<String> tempList = [];
     if (query.isNotEmpty) {
       tempList = contatos
-          .where(
-              (contact) => contact.toLowerCase().contains(query.toLowerCase()))
+          .where((contact) => contact.toLowerCase().contains(query.toLowerCase()))
           .toList();
     } else {
-      tempList = contatos;
+      tempList = List.from(contatos);
     }
     setState(() {
       filteredContatos = tempList;
