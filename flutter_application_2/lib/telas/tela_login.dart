@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -8,6 +10,60 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> login() async {
+    final String username = usernameController.text;
+    final String password = passwordController.text;
+
+    if (username.isEmpty || password.isEmpty) {
+      // Exibir mensagem de erro se os campos estiverem vazios
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Preencha todos os campos')),
+      );
+      return;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('https://run.mocky.io/v3/07ae9787-3f03-4656-ac2e-876b9e487147'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "username": username,
+          "password": password,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final String token = data['accessToken'];
+
+        // Salve o token e navegue para a próxima tela
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        // Exibir mensagem de erro caso o login falhe
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login falhou. Verifique suas credenciais.')),
+        );
+      }
+    } catch (e) {
+      // Exibir mensagem de erro em caso de exceção
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao conectar ao servidor')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,8 +89,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   ImgLogo(),
                   TextosTelaLogin(),
-                  InputsLogin(),
-                  BotaoLogin()
+                  InputsLogin(
+                    usernameController: usernameController,
+                    passwordController: passwordController,
+                  ),
+                  BotaoLogin(
+                    usernameController: usernameController,
+                    passwordController: passwordController,
+                    loginFunction: login,
+                  ),
                 ],
               ),
             )
@@ -45,15 +108,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-//componentes da tela de login
-class ImgLogin extends StatefulWidget {
-  const ImgLogin({super.key});
-
-  @override
-  State<ImgLogin> createState() => _ImgLoginState();
-}
-
-class _ImgLoginState extends State<ImgLogin> {
+// Componentes da tela de login
+class ImgLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -67,17 +123,7 @@ class _ImgLoginState extends State<ImgLogin> {
   }
 }
 
-//
-/////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////
-class ImgLogo extends StatefulWidget {
-  const ImgLogo({super.key});
-
-  @override
-  State<ImgLogo> createState() => _ImgLogoState();
-}
-
-class _ImgLogoState extends State<ImgLogo> {
+class ImgLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -89,17 +135,7 @@ class _ImgLogoState extends State<ImgLogo> {
   }
 }
 
-/////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////
-
-class TextosTelaLogin extends StatefulWidget {
-  const TextosTelaLogin({super.key});
-
-  @override
-  State<TextosTelaLogin> createState() => _TextosTelaLoginState();
-}
-
-class _TextosTelaLoginState extends State<TextosTelaLogin> {
+class TextosTelaLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -107,26 +143,26 @@ class _TextosTelaLoginState extends State<TextosTelaLogin> {
         children: [
           Padding(
             padding: EdgeInsets.all(5),
-            child: SizedBox(
-              child: Text(
-                "Bem vindo de volta!",
-                style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    decoration: TextDecoration.none),
+            child: Text(
+              "Bem vindo de volta!",
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                decoration: TextDecoration.none,
               ),
             ),
           ),
           Padding(
             padding: EdgeInsets.all(5),
-            child: SizedBox(
-              child: Text("Faça login para continuar",
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      decoration: TextDecoration.none)),
+            child: Text(
+              "Faça login para continuar",
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                decoration: TextDecoration.none,
+              ),
             ),
           )
         ],
@@ -135,17 +171,16 @@ class _TextosTelaLoginState extends State<TextosTelaLogin> {
   }
 }
 
-/////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////
+class InputsLogin extends StatelessWidget {
+  final TextEditingController usernameController;
+  final TextEditingController passwordController;
 
-class InputsLogin extends StatefulWidget {
-  const InputsLogin({super.key});
+  const InputsLogin({
+    super.key,
+    required this.usernameController,
+    required this.passwordController,
+  });
 
-  @override
-  State<InputsLogin> createState() => _InputsLoginState();
-}
-
-class _InputsLoginState extends State<InputsLogin> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -155,47 +190,56 @@ class _InputsLoginState extends State<InputsLogin> {
           Container(
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.all(5),
-            child: Text("Telefone :",
-                style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    decoration: TextDecoration.none)),
+            child: Text(
+              "Usuário:",
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                decoration: TextDecoration.none,
+              ),
+            ),
           ),
           SizedBox(
             width: 250,
             child: TextField(
+              controller: usernameController,
               decoration: InputDecoration(
-                  constraints: BoxConstraints(maxWidth: 100),
-                  filled: true,
-                  fillColor: const Color.fromRGBO(240, 231, 16, 80),
-                  hintText: "Digite o telefone",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  )),
+                filled: true,
+                fillColor: const Color.fromRGBO(240, 231, 16, 80),
+                hintText: "Digite seu nome",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              ),
             ),
           ),
           Container(
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.all(5),
-            child: Text("Senha:",
-                style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    decoration: TextDecoration.none)),
+            child: Text(
+              "Senha:",
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                decoration: TextDecoration.none,
+              ),
+            ),
           ),
           SizedBox(
             width: 250,
             child: TextField(
+              controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
-                  filled: true,
-                  fillColor: const Color.fromRGBO(240, 231, 16, 80),
-                  hintText: "Digite a senha",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  )),
+                filled: true,
+                fillColor: const Color.fromRGBO(240, 231, 16, 80),
+                hintText: "Digite a senha",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              ),
             ),
           ),
         ],
@@ -204,30 +248,29 @@ class _InputsLoginState extends State<InputsLogin> {
   }
 }
 
-////////////////////////////////
-/////////////////////////////
+class BotaoLogin extends StatelessWidget {
+  final TextEditingController usernameController;
+  final TextEditingController passwordController;
+  final Function loginFunction;
 
-class BotaoLogin extends StatefulWidget {
-  const BotaoLogin({super.key});
+  const BotaoLogin({
+    super.key,
+    required this.usernameController,
+    required this.passwordController,
+    required this.loginFunction,
+  });
 
-  @override
-  State<BotaoLogin> createState() => _BotaoLoginState();
-}
-
-class _BotaoLoginState extends State<BotaoLogin> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => {Navigator.pushReplacementNamed(context, '/home')},
+      onPressed: () => loginFunction(),
       style: ButtonStyle(
-        backgroundColor:
-            MaterialStateProperty.all(Color.fromRGBO(240, 231, 16, 1)),
+        backgroundColor: MaterialStateProperty.all(Color.fromRGBO(240, 231, 16, 1)),
         foregroundColor: MaterialStateProperty.all(Colors.black),
         fixedSize: MaterialStateProperty.all(Size(140, 50)),
         shape: MaterialStateProperty.all(
           RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.circular(10.0), // Raio da borda arredondada
+            borderRadius: BorderRadius.circular(10.0),
           ),
         ),
       ),
