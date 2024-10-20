@@ -6,27 +6,43 @@ import 'telas/tela_login.dart'; // Importando a tela principal
 import 'telas/tela_inicial.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
 
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-        
-      ),
-      initialRoute: '/login', // Definindo a rota inicial como a HomeScreen
-      routes: {
-        '/login': (context) => const LoginScreen(), // Rota para a tela de login
-        
-       
+      initialRoute: '/login', // Definindo a rota inicial como a tela de login
+      onGenerateRoute: (settings) {
+        // Verificar qual rota está sendo chamada e passar os argumentos necessários
+        switch (settings.name) {
+          case '/home':
+            final token = settings.arguments as String;
+            return MaterialPageRoute(
+              builder: (context) => ClientChecklistScreen(token: token),
+            );
+          case '/checklist':
+            final token = settings.arguments as String;
+            return MaterialPageRoute(
+              builder: (context) => TelaCriacaoChecklist(token: token), // Assumindo que você tem um ChecklistScreen
+            );
+          case '/relatorio':
+            final token = settings.arguments as String;
+            return MaterialPageRoute(
+              builder: (context) => RelatorioScreen(token: token), // Assumindo que você tem um RelatorioScreen
+            );
+          case '/telabusca':
+            final token = settings.arguments as String;
+            return MaterialPageRoute(
+              builder: (context) => TelaBuscaScreen(token: token), // Assumindo que você tem uma TelaBuscaScreen
+            );
+          default:
+            return MaterialPageRoute(
+              builder: (context) => LoginScreen(),
+            );
+        }
       },
     );
   }

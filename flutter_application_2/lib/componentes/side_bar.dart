@@ -65,7 +65,7 @@ class botoes extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/home');
+              Navigator.pushReplacementNamed(context, '/home', arguments: token);
             },
             child: const Text("Home"),
             style: ElevatedButton.styleFrom(
@@ -82,7 +82,7 @@ class botoes extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/checklist');
+              Navigator.pushReplacementNamed(context, '/checklist', arguments: token);
             },
             child: const Text("CheckLists"),
             style: ElevatedButton.styleFrom(
@@ -99,7 +99,7 @@ class botoes extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/relatorio');
+              Navigator.pushReplacementNamed(context, '/relatorio', arguments: token);
             },
             child: const Text("Relatório"),
             style: ElevatedButton.styleFrom(
@@ -116,7 +116,7 @@ class botoes extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/telabusca');
+              Navigator.pushReplacementNamed(context, '/telabusca', arguments: token);
             },
             child: const Text("Contatos"),
             style: ElevatedButton.styleFrom(
