@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_2/componentes/side_bar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+
+//interacao ---  https://run.mocky.io/v3/f8ec33c1-7416-436e-be16-16ff924e5656
 
 class RelatorioScreen extends StatefulWidget {
-   final String token;
-   const RelatorioScreen({super.key, required this.token});
+  final String token;
+  const RelatorioScreen({super.key, required this.token});
 
   @override
   State<RelatorioScreen> createState() => _RelatorioScreenState();
@@ -21,26 +24,60 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
   @override
   void initState() {
     super.initState();
-    fetchRelatorios();
+    fetchTodasInteracoes(); // Carrega as interações após a inicialização
   }
 
-  Future<void> fetchRelatorios() async {
-    final response = await http.get(Uri.parse(
-        'https://run.mocky.io/v3/e4375da5-4e76-4880-95bf-5b8fb34a36d3'));
+  // Função para buscar todas as interações
+Future<void> fetchTodasInteracoes() async {
+  try {
+    final response = await http.get(
+      Uri.parse('https://run.mocky.io/v3/4c8f5a69-f846-4b9a-87a1-04c914de88d1'),
+      headers: {
+        'Authorization': 'Bearer ${widget.token}',
+        'Content-Type': 'application/json',
+      },
+    );
 
     if (response.statusCode == 200) {
+      
       final data = json.decode(response.body);
-      setState(() {
-        relatorios = data['relatorios'];
-        filteredRelatorios =
-            List.from(relatorios); // Inicializa a lista filtrada
-      });
-    } else {
-      throw Exception('Falha ao carregar relatórios');
-    }
-  }
+print(data);
+if (data != null && data is List) {
+  setState(() {
+    relatorios = data.map((item) {
+      // Acessa o nome do checklist como título
+      String titulo = item['nome'] ?? 'Título Desconhecido';
+      
+      // Conta a quantidade de questões presentes no checklist
+      int quantidade = item['questoes'] != null && item['questoes'] is List
+          ? (item['questoes'] as List).length
+          : 0;
+      
+      // Obtém a data de criação
+      String dataCriacao = item['dataCriacao'] ?? 'Data Desconhecida';
 
-  // Função para filtrar relatórios
+      return {
+        'titulo': titulo,
+        'quantidade': quantidade,
+        'dataCriacao': dataCriacao,
+      };
+    }).toList();
+    filteredRelatorios = List.from(relatorios); // Inicializa a lista filtrada
+  });
+
+      } else {
+        throw Exception('Formato de dados inválido');
+      }
+    } else {
+      throw Exception('Erro ao carregar interações');
+    }
+  } catch (e) {
+    print("Erro: $e");
+    throw Exception('Erro ao carregar interações');
+  }
+}
+
+  // Função para filtrar relatórios/interações
   void filterRelatorios(String query) {
     setState(() {
       searchQuery = query;

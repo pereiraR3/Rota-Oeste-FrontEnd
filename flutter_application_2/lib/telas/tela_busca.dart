@@ -14,7 +14,7 @@ class TelaBuscaScreen extends StatefulWidget {
 }
 
 class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
-
+  
   // Lista de seleção para o Checkbox
   List<bool> _isChecked = [false, false, false];
 
