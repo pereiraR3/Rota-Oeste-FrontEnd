@@ -12,6 +12,11 @@ class TelaBuscaScreen extends StatefulWidget {
   @override
   _TelaBuscaScreenState createState() => _TelaBuscaScreenState();
 }
+//https://run.mocky.io/v3/c1241b4c-b1f7-49cc-82ef-92a8d1a32413   cliente
+// https://run.mocky.io/v3/9a95e9c2-ec21-40d4-83ff-e3d6e90d5295  checklist
+
+//coisas para fazer nesta tela: listar cliente, checklist, vincular os dois.
+
 
 class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
   
@@ -19,8 +24,8 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
   List<bool> _isChecked = [false, false, false];
 
   // Lista de opções para o DropdownButton
-  List<String> dropdownItems = ['freio da disco', 'embreagem', 'volante'];
-
+  List<String> dropdownItems = [];
+  List<dynamic> listaChecklist = [];
   // Lista que guarda a opção selecionada de cada linha
   List<String?> _selectedItems = [null, null, null];
 
@@ -37,7 +42,37 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
   void initState() {
     super.initState();
   }
+Future<void> fetchAllChecklist() async{
+  try {
+     final response = await http.get(
+      Uri.parse('https://run.mocky.io/v3/9a95e9c2-ec21-40d4-83ff-e3d6e90d5295'),
+      headers: {
+        'Authorization': 'Bearer ${widget.token}',
+        'Content-Type': 'application/json',
+      },
+    );
+    if (response.statusCode == 200){
+      final data = json.decode(response.body);
+      if (data != null && data is List){
 
+        setState(() {
+          listaChecklist = data.map((item){
+            String titulo = item['nome'] ?? 'Sem checkList';
+            
+            return {'titulo':titulo};
+          }).toList();
+           dropdownItems = listaChecklist.map((item) {
+            return item['titulo'] as String;
+          }).toList();
+        });
+
+      }
+    }
+  } catch (e) {
+    print("Erro: $e");
+    throw Exception('Erro ao carregar interações');
+  }
+}
   // Função para buscar dados do Mocky
  
   // Função que atualiza a lista de contatos com base na busca
