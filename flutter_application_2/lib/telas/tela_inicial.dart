@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/componentes/side_bar.dart'; // Importando o SideBar
 
+
+// puxar 
 class ChecklistScreen extends StatelessWidget {
   const ChecklistScreen({super.key});
 

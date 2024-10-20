@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_2/componentes/side_bar.dart';
 import 'package:http/http.dart' as http;
 import '../models/cliente.dart'; // Modelo de Cliente
-import '../service/clienteService.dart';
 
 
 class TelaBuscaScreen extends StatefulWidget {
@@ -14,8 +13,7 @@ class TelaBuscaScreen extends StatefulWidget {
 }
 
 class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
-  final ClienteService _clienteService = ClienteService();
-  List<Cliente> _clientes = [];
+
   // Lista de seleção para o Checkbox
   List<bool> _isChecked = [false, false, false];
 
@@ -37,34 +35,10 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchData(); // Chama a função para buscar dados
   }
 
   // Função para buscar dados do Mocky
-  Future<void> _fetchData() async {
-    try {
-      final clientes = await _clienteService.getClientes();
-      setState(() {
-        _clientes = clientes;
-        // Preencher a lista de contatos com os nomes dos clientes retornados
-        contatos = clientes
-        .map((cliente) => cliente.nome ?? '')
-        .where((nome) => nome.isNotEmpty) // Filtra para não ter strings vazias
-        .toList();
-        // Atualizar a lista filtrada inicialmente com todos os contatos
-        filteredContatos = contatos;
-        _isChecked = List<bool>.filled(clientes.length, false);
-      _selectedItems = List<String?>.filled(clientes.length, null);
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erro ao buscar clientes: $e'),
-        ),
-      );
-    }
-  }
-
+ 
   // Função que atualiza a lista de contatos com base na busca
   void _filterContatos(String query) {
     List<String> tempList = [];
