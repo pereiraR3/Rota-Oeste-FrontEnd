@@ -26,8 +26,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => const LoginScreen(), // Rota para a tela de login
         
-        '/relatorio': (context) => const RelatorioScreen(),
-        '/checklist': (context) => TelaCriacaoChecklist(),
+       
       },
     );
   }

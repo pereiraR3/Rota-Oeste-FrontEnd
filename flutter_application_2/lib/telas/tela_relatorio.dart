@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class RelatorioScreen extends StatefulWidget {
-  const RelatorioScreen({super.key});
+   final String token;
+   const RelatorioScreen({super.key, required this.token});
 
   @override
   State<RelatorioScreen> createState() => _RelatorioScreenState();
@@ -61,7 +62,7 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
     return Scaffold(
       body: Row(
         children: [
-          SideBar(),
+          SideBar(token: widget.token),
           Expanded(
             child: Container(
               child: Column(

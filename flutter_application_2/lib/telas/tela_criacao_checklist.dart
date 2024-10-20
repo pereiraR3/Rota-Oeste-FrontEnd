@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_2/componentes/side_bar.dart';
 
 class TelaCriacaoChecklist extends StatefulWidget {
+  final String token;
+   const TelaCriacaoChecklist({super.key, required this.token});
   @override
   _TelaCriacaoChecklistState createState() => _TelaCriacaoChecklistState();
 }
@@ -27,7 +29,7 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
     return Scaffold(
       body: Row(
         children: [
-          SideBar(),
+          SideBar(token: widget.token),
           Expanded(
               child: Container(
             child: Column(
