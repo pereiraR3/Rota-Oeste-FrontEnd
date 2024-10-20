@@ -165,7 +165,7 @@ List<Map<String, int>> obterRelacoesClientesChecklists() {
 }
 
 Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async {
-  final url = Uri.parse('https://seu-dominio.com/checklist/adicionar/clienteId/$clienteId/checklistId/$checkListId');
+  final url = Uri.parse('https://run.mocky.io/v3/26dd8336-9b6e-4edf-9ce0-6042d63ca267');
 
   try {
     final response = await http.post(
@@ -176,7 +176,7 @@ Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async
       },
     );
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       print("Relação Cliente-Checklist criada com sucesso.");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -351,12 +351,15 @@ Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async
                             ),
                           ),
                           ElevatedButton(
-                            onPressed: ()
-                            {  
-                               List<Map<String, int>> relacoes = obterRelacoesClientesChecklists();
+                            onPressed: _verificarSelecaoValida() ? (){
+                              List<Map<String, int>> relacoes = obterRelacoesClientesChecklists();
 
-                             print("Relações Cliente-Checklist: $relacoes");
-                             },
+                                print("Relações Cliente-Checklist: $relacoes");
+                                  // Envia cada relação para o backend
+                                    for (var relacao in relacoes) {
+                                      enviarRelacaoClienteChecklist(relacao['clienteId']!, relacao['checkListId']!);
+                                    }
+                            }: null,
                             child: Text("Enviar"),
                             style: ElevatedButton.styleFrom(
                               foregroundColor: Colors.black,
