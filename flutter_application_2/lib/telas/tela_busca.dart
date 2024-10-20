@@ -42,7 +42,16 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
     print(_isChecked);
     
   }
-
+bool _verificarSelecaoValida() {
+  // Verifica se há pelo menos um cliente marcado e com checklist selecionado
+  for (int i = 0; i < _isChecked.length; i++) {
+    if (_isChecked[i] && _selectedItems[i] != null) {
+      return true;
+    }
+  }
+  return false;
+}
+ 
   Future<void> fetchAllChecklist() async {
     try {
       final response = await http.get(
@@ -153,6 +162,46 @@ List<Map<String, int>> obterRelacoesClientesChecklists() {
   }
 
   return relacoes;
+}
+
+Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async {
+  final url = Uri.parse('https://seu-dominio.com/checklist/adicionar/clienteId/$clienteId/checklistId/$checkListId');
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Bearer ${widget.token}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 201) {
+      print("Relação Cliente-Checklist criada com sucesso.");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Relação Cliente-Checklist criada com sucesso!"),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      print("Erro ao criar a relação: ${response.statusCode}");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Erro ao criar a relação. Código: ${response.statusCode}"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  } catch (e) {
+    print("Erro: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Erro ao enviar a relação: $e"),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
 }
 
 
