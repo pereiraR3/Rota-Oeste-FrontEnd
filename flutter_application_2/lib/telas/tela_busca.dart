@@ -12,17 +12,12 @@ class TelaBuscaScreen extends StatefulWidget {
   @override
   _TelaBuscaScreenState createState() => _TelaBuscaScreenState();
 }
-//https://run.mocky.io/v3/c1241b4c-b1f7-49cc-82ef-92a8d1a32413   cliente
-// https://run.mocky.io/v3/9a95e9c2-ec21-40d4-83ff-e3d6e90d5295  checklist
-
-//coisas para fazer nesta tela: listar cliente, checklist, vincular os dois.
 
 
 class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
   // Lista de seleção para o Checkbox
   List<bool> _isChecked = [];
 
-  // Lista de opções para o DropdownButton
   List<String> dropdownItems = [];
   List<dynamic> listaClientes = [];
   List<dynamic> listaChecklist = [];
@@ -44,6 +39,8 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
     super.initState();
     fetchAllClientes();
     fetchAllChecklist();
+    print(_isChecked);
+    
   }
 
   Future<void> fetchAllChecklist() async {
@@ -57,12 +54,12 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print(data);
         if (data != null && data is List) {
           setState(() {
             listaChecklist = data.map((item) {
               String titulo = item['nome'] ?? 'Sem checklist';
-              return {'titulo': titulo};
+              int id = item['id'];
+              return {'titulo': titulo, 'id': id};
             }).toList();
 
             dropdownItems = listaChecklist.map((item) {
@@ -92,7 +89,8 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
           setState(() {
             listaClientes = data.map((item) {
               String nome = item['nome'] ?? 'Sem contatos';
-              return {'nome': nome};
+              int id = item['id'] ?? 'vazio';
+              return {'nome': nome, 'id': id};
             }).toList();
 
             // Atualiza a lista de contatos com os nomes
@@ -128,6 +126,35 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
       filteredContatos = tempList;
     });
   }
+
+
+List<Map<String, int>> obterRelacoesClientesChecklists() {
+  List<Map<String, int>> relacoes = [];
+
+  for (int i = 0; i < _isChecked.length; i++) {
+    if (_isChecked[i] && listaClientes[i]['id'] != null && _selectedItems[i] != null) {
+      int clienteId = listaClientes[i]['id']; // Obtém o ID do cliente correspondente ao índice i
+
+      // Obtém o ID do checklist selecionado com base no título do item selecionado
+      int? checkListId = listaChecklist.firstWhere(
+        (checklist) => checklist['titulo'] == _selectedItems[i],
+        orElse: () => {'id': -1}
+      )['id'];
+
+      if (clienteId != null && checkListId != null && checkListId != -1) {
+        relacoes.add({
+          'clienteId': clienteId,
+          'checkListId': checkListId,
+        });
+      } else {
+        print("Erro: ID inválido encontrado no índice $i");
+      }
+    }
+  }
+
+  return relacoes;
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -275,7 +302,12 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
                             ),
                           ),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: ()
+                            {  
+                               List<Map<String, int>> relacoes = obterRelacoesClientesChecklists();
+
+                             print("Relações Cliente-Checklist: $relacoes");
+                             },
                             child: Text("Enviar"),
                             style: ElevatedButton.styleFrom(
                               foregroundColor: Colors.black,
