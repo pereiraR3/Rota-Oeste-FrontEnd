@@ -55,7 +55,7 @@ bool _verificarSelecaoValida() {
   Future<void> fetchAllChecklist() async {
     try {
       final response = await http.get(
-        Uri.parse('https://run.mocky.io/v3/9a95e9c2-ec21-40d4-83ff-e3d6e90d5295'),
+        Uri.parse('http://localhost:5092/checklist/buscarTodos'),
         headers: {
           'Authorization': 'Bearer ${widget.token}',
           'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ bool _verificarSelecaoValida() {
   Future<void> fetchAllClientes() async {
     try {
       final response = await http.get(
-        Uri.parse('https://run.mocky.io/v3/c1241b4c-b1f7-49cc-82ef-92a8d1a32413'),
+        Uri.parse('http://localhost:5092/cliente/buscarTodos'),
         headers: {
           'Authorization': 'Bearer ${widget.token}',
           'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ List<Map<String, int>> obterRelacoesClientesChecklists() {
 }
 
 Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async {
-  final url = Uri.parse('https://run.mocky.io/v3/26dd8336-9b6e-4edf-9ce0-6042d63ca267');
+  final url = Uri.parse('http://localhost:5092/checklist/adicionar/clienteId/$clienteId/checklistId/$checkListId');
 
   try {
     final response = await http.post(

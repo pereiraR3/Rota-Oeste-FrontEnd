@@ -26,15 +26,17 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
   final prefs = await SharedPreferences.getInstance();
   setState(() {
     token = prefs.getString('token');
+    
   });
   print('Token carregado para requisição: $token');
 }
 
 
   Future<List<dynamic>> fetchClientes() async {
+    
     // Simulando a busca de clientes
     final response = await http.get(
-      Uri.parse('https://run.mocky.io/v3/45040cea-f375-4fb4-b82b-fd16e7a65fdf'),
+      Uri.parse('http://localhost:5092/cliente/buscarTodos'),
       headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -51,7 +53,7 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
   Future<List<dynamic>> fetchChecklists() async {
     // Simulando a busca de checklists
     final response = await http.get(
-      Uri.parse('https://run.mocky.io/v3/3e078084-e58e-485e-96b0-98d8fdc5ac62'),
+      Uri.parse('http://localhost:5092/checklist/buscarTodos'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',

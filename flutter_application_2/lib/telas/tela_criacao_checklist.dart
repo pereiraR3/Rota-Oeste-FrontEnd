@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/componentes/side_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class TelaCriacaoChecklist extends StatefulWidget {
   final String token;
@@ -10,6 +13,7 @@ class TelaCriacaoChecklist extends StatefulWidget {
 
 class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
   List<Question> questions = [];
+  String? token;
 
   void addQuestion() {
     setState(() {
@@ -21,6 +25,34 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
     setState(() {
       questions.removeAt(index);
     });
+  }
+
+
+  Future<void> _loadToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      token = prefs.getString('token');
+      
+    });
+    print('Token carregado para requisição: $token');
+  }
+
+
+   Future<List<dynamic>> fetchChecklists() async {
+    // Simulando a busca de checklists
+    final response = await http.get(
+      Uri.parse('http://localhost:5092/checklist/buscarTodos'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Erro ao carregar checklists');
+    }
   }
 
   @override
