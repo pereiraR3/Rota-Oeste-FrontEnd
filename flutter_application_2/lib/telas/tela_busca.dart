@@ -176,7 +176,7 @@ Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async
       },
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode >= 200) {
       print("Relação Cliente-Checklist criada com sucesso.");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
