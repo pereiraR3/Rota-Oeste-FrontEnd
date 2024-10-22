@@ -13,8 +13,8 @@ class TelaCriacaoChecklist extends StatefulWidget {
 
 class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
   List<Question> questions = [];
+  final TextEditingController nomeCheckListController = TextEditingController();
   String? token;
-
   void addQuestion() {
     setState(() {
       questions.add(Question());
@@ -54,12 +54,15 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
       throw Exception('Erro ao carregar checklists');
     }
   }
-
+void salvarCheque(){
+  print(nomeCheckListController.text);
+}
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
+    
     return Scaffold(
-      body: Row(
+      body: Row( 
         children: [
           SideBar(token: widget.token),
           Expanded(
@@ -101,6 +104,7 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
                                 child: Container(
                                   width: 400,
                                   child: TextField(
+                                    controller: nomeCheckListController,
                                     decoration: InputDecoration(
                                       filled: true,
                                       fillColor: Colors.white,
@@ -114,7 +118,7 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
                             width: 120,
                           ),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed:salvarCheque,
                             child: Text("Salvar Checklist"),
                             style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.black,
