@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse('https://run.mocky.io/v3/6ec762ec-18b4-499e-ae8d-68ed2fc24496'),
+        Uri.parse('http://localhost:5092/auth/login'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -50,8 +50,8 @@ class _LoginScreenState extends State<LoginScreen> {
         final data = jsonDecode(response.body);
         final String token = data['accessToken'];
         // Salva o token em SharedPreferences para uso posterior
-       // final prefs = await SharedPreferences.getInstance();
-       // await prefs.setString('token', token);
+       final prefs = await SharedPreferences.getInstance();
+       await prefs.setString('token', token);
 
         // Navegar para a tela inicial passando o token
        Navigator.pushReplacement(

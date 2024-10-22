@@ -24,11 +24,11 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
   @override
   void initState() {
     super.initState();
-    fetchTodasInteracoes(); // Carrega as interações após a inicialização
+    fechTodosCheckLists(); // Carrega as interações após a inicialização
   }
 
   // Função para buscar todas as interações
-Future<void> fetchTodasInteracoes() async {
+Future<void> fechTodosCheckLists() async {
   try {
     final response = await http.get(
       Uri.parse('https://run.mocky.io/v3/4c8f5a69-f846-4b9a-87a1-04c914de88d1'),

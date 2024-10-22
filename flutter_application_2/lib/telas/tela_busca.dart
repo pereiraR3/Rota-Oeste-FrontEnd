@@ -13,16 +13,17 @@ class TelaBuscaScreen extends StatefulWidget {
   _TelaBuscaScreenState createState() => _TelaBuscaScreenState();
 }
 
+
 class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
-  
   // Lista de seleção para o Checkbox
-  List<bool> _isChecked = [false, false, false];
+  List<bool> _isChecked = [];
 
-  // Lista de opções para o DropdownButton
-  List<String> dropdownItems = ['freio da disco', 'embreagem', 'volante'];
-
+  List<String> dropdownItems = [];
+  List<dynamic> listaClientes = [];
+  List<dynamic> listaChecklist = [];
+  
   // Lista que guarda a opção selecionada de cada linha
-  List<String?> _selectedItems = [null, null, null];
+  List<String?> _selectedItems = [];
 
   // Lista de contatos (nome da segunda coluna)
   List<String> contatos = [];
@@ -36,25 +37,173 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
   @override
   void initState() {
     super.initState();
+    fetchAllClientes();
+    fetchAllChecklist();
+    print(_isChecked);
+    
+  }
+bool _verificarSelecaoValida() {
+  // Verifica se há pelo menos um cliente marcado e com checklist selecionado
+  for (int i = 0; i < _isChecked.length; i++) {
+    if (_isChecked[i] && _selectedItems[i] != null) {
+      return true;
+    }
+  }
+  return false;
+}
+ 
+  Future<void> fetchAllChecklist() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://localhost:5092/checklist/buscarTodos'),
+        headers: {
+          'Authorization': 'Bearer ${widget.token}',
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data != null && data is List) {
+          setState(() {
+            listaChecklist = data.map((item) {
+              String titulo = item['nome'] ?? 'Sem checklist';
+              int id = item['id'];
+              return {'titulo': titulo, 'id': id};
+            }).toList();
+
+            dropdownItems = listaChecklist.map((item) {
+              return item['titulo'] as String;
+            }).toList();
+          });
+        }
+      }
+    } catch (e) {
+      print("Erro: $e");
+      throw Exception('Erro ao carregar checklists');
+    }
   }
 
-  // Função para buscar dados do Mocky
- 
-  // Função que atualiza a lista de contatos com base na busca
+  Future<void> fetchAllClientes() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://localhost:5092/cliente/buscarTodos'),
+        headers: {
+          'Authorization': 'Bearer ${widget.token}',
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data != null && data is List) {
+          setState(() {
+            listaClientes = data.map((item) {
+              String nome = item['nome'] ?? 'Sem contatos';
+              int id = item['id'] ?? 'vazio';
+              return {'nome': nome, 'id': id};
+            }).toList();
+
+            // Atualiza a lista de contatos com os nomes
+            contatos = listaClientes.map((item) {
+              return item['nome'] as String;
+            }).toList();
+
+            // Inicializa as listas de controle de seleção e dropdown
+            _isChecked = List<bool>.filled(contatos.length, false);
+            _selectedItems = List<String?>.filled(contatos.length, null);
+            
+            // Inicializa a lista filtrada com todos os contatos
+            filteredContatos = List.from(contatos);
+          });
+        }
+      }
+    } catch (e) {
+      print("Erro: $e");
+      throw Exception('Erro ao carregar clientes');
+    }
+  }
+
   void _filterContatos(String query) {
     List<String> tempList = [];
     if (query.isNotEmpty) {
       tempList = contatos
-          .where(
-              (contact) => contact.toLowerCase().contains(query.toLowerCase()))
+          .where((contact) => contact.toLowerCase().contains(query.toLowerCase()))
           .toList();
     } else {
-      tempList = contatos;
+      tempList = List.from(contatos);
     }
     setState(() {
       filteredContatos = tempList;
     });
   }
+
+
+List<Map<String, int>> obterRelacoesClientesChecklists() {
+  List<Map<String, int>> relacoes = [];
+
+  for (int i = 0; i < _isChecked.length; i++) {
+    if (_isChecked[i] && listaClientes[i]['id'] != null && _selectedItems[i] != null) {
+      int clienteId = listaClientes[i]['id']; // Obtém o ID do cliente correspondente ao índice i
+
+      // Obtém o ID do checklist selecionado com base no título do item selecionado
+      int? checkListId = listaChecklist.firstWhere(
+        (checklist) => checklist['titulo'] == _selectedItems[i],
+        orElse: () => {'id': -1}
+      )['id'];
+
+      if (clienteId != null && checkListId != null && checkListId != -1) {
+        relacoes.add({
+          'clienteId': clienteId,
+          'checkListId': checkListId,
+        });
+      } else {
+        print("Erro: ID inválido encontrado no índice $i");
+      }
+    }
+  }
+
+  return relacoes;
+}
+
+Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async {
+  final url = Uri.parse('http://localhost:5092/checklist/adicionar/clienteId/$clienteId/checklistId/$checkListId');
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Bearer ${widget.token}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print("Relação Cliente-Checklist criada com sucesso.");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Relação Cliente-Checklist criada com sucesso!"),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      print("Erro ao criar a relação: ${response.statusCode}");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Erro ao criar a relação. Código: ${response.statusCode}"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  } catch (e) {
+    print("Erro: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Erro ao enviar a relação: $e"),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +351,15 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
                             ),
                           ),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: _verificarSelecaoValida() ? (){
+                              List<Map<String, int>> relacoes = obterRelacoesClientesChecklists();
+
+                                print("Relações Cliente-Checklist: $relacoes");
+                                  // Envia cada relação para o backend
+                                    for (var relacao in relacoes) {
+                                      enviarRelacaoClienteChecklist(relacao['clienteId']!, relacao['checkListId']!);
+                                    }
+                            }: null,
                             child: Text("Enviar"),
                             style: ElevatedButton.styleFrom(
                               foregroundColor: Colors.black,
