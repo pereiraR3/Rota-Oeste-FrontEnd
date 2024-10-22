@@ -65,7 +65,8 @@ class botoes extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/home', arguments: token);
+              Navigator.pushReplacementNamed(context, '/home',
+                  arguments: token);
             },
             child: const Text("Home"),
             style: ElevatedButton.styleFrom(
@@ -82,7 +83,8 @@ class botoes extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/checklist', arguments: token);
+              Navigator.pushReplacementNamed(context, '/checklist',
+                  arguments: token);
             },
             child: const Text("CheckLists"),
             style: ElevatedButton.styleFrom(
@@ -99,7 +101,8 @@ class botoes extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/relatorio', arguments: token);
+              Navigator.pushReplacementNamed(context, '/relatorio',
+                  arguments: token);
             },
             child: const Text("Relatório"),
             style: ElevatedButton.styleFrom(
@@ -116,9 +119,28 @@ class botoes extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/telabusca', arguments: token);
+              Navigator.pushReplacementNamed(context, '/telabusca',
+                  arguments: token);
             },
             child: const Text("Contatos"),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: const Color.fromRGBO(60, 60, 60, 1),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero,
+                  side: BorderSide(color: Colors.white12)),
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 50,
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/cadastro',
+                  arguments: token);
+            },
+            child: const Text("Cadastro de contatos"),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
               backgroundColor: const Color.fromRGBO(60, 60, 60, 1),
