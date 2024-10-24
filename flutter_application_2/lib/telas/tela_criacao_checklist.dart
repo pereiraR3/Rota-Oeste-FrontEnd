@@ -13,6 +13,7 @@ class TelaCriacaoChecklist extends StatefulWidget {
 
 class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
   List<Question> questions = [];
+  final String BaseUrl = 'http://localhost:5092';
   final TextEditingController nomeCheckListController = TextEditingController();
   String? token;
   void addQuestion() {
@@ -41,7 +42,7 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
    Future<List<dynamic>> fetchChecklists() async {
     // Simulando a busca de checklists
     final response = await http.get(
-      Uri.parse('http://localhost:5092/checklist/buscarTodos'),
+      Uri.parse('$BaseUrl/checklist/buscarTodos'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -54,15 +55,39 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
       throw Exception('Erro ao carregar checklists');
     }
   }
-void salvarCheque(){
-  
-  print(nomeCheckListController.text);
-  for (var q in questions){
-    
-    print(q.questionText+' '+ q.questionType);
+
+  Future<void> Chequelist() async {
+   
+    final response   = await http.post(Uri.parse('$BaseUrl/checklist/adicionar'),
+
+    headers: 
+            {'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "usuarioId": 0,
+          "nome": nomeCheckListController.text,
+        }),
+        );
+  if (response.statusCode >= 200 && response.statusCode < 400){
+    final data = jsonDecode(response.body);
+    var idCheckList = data['checklistId'];
+    print(idCheckList);
+  }else if (response.statusCode > 400){
+    final data = jsonDecode(response.body);
+    var e = data['message'];
+     ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro: $e')),
+      );
+  }
   }
 
+
+void salvarCheque(){
+  Chequelist();
 }
+ 
+ 
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
