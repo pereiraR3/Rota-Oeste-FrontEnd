@@ -12,10 +12,10 @@ class TelaCriacaoChecklist extends StatefulWidget {
 }
 
 class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
+  String? token;
   List<Question> questions = [];
   final String BaseUrl = 'http://localhost:5092';
   final TextEditingController nomeCheckListController = TextEditingController();
-  String? token;
   void addQuestion() {
     setState(() {
       questions.add(Question());
@@ -26,6 +26,11 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
     setState(() {
       questions.removeAt(index);
     });
+  }
+ @override
+  void initState() {
+    super.initState();
+    _loadToken();
   }
 
 
@@ -39,60 +44,53 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
   }
 
 
-   Future<List<dynamic>> fetchChecklists() async {
-    // Simulando a busca de checklists
-    final response = await http.get(
-      Uri.parse('$BaseUrl/checklist/buscarTodos'),
+ 
+Future<void> Chequelist() async {
+  try {
+    print(token);
+    // Fazendo a requisição HTTP POST
+    final response = await http.post(
+      Uri.parse('http://localhost:5092/checklist/adicionar'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
+      body: jsonEncode({
+        "usuarioId": 2,
+        "nome": nomeCheckListController.text,
+      }),
     );
 
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      throw Exception('Erro ao carregar checklists');
-    }
-  }
+    // Verificando o código de status da resposta
+    if (response.statusCode >= 200 && response.statusCode < 400) {
+      final data = jsonDecode(response.body);
+      var idCheckList = data['id'];
 
-  Future<void> Chequelist() async {
-   try{
-
-    print('$BaseUrl/checklist/adicionar');
-    final response   = await http.post(Uri.parse('$BaseUrl/checklist/adicionar'),
-    headers: 
-            {'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          "usuarioId": 0,
-          "nome": nomeCheckListController.text,
-        }),
-        );
-  if (response.statusCode >= 200 && response.statusCode < 400){
-    final data = jsonDecode(response.body);
-    var idCheckList = data['checklistId'];
-    print(idCheckList);
-  }else if (response.statusCode >= 400){
-    final data = jsonDecode(response.body);
-     var e = data['message'] ?? 'Erro desconhecido';
-     ScaffoldMessenger.of(context).showSnackBar(
+      print('ID do Checklist: $idCheckList');
+    } else if (response.statusCode >= 400) {
+      // Caso de erro
+      final data = jsonDecode(response.body);
+      var e = data['message'] ?? 'Erro desconhecido';
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro: $e')),
       );
+    }
+  } catch (e) {
+    // Tratamento de exceções de conexão ou de parsing JSON
+    print('Erro na requisição: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Erro ao se conectar com o servidor')),
+    );
   }
-   } catch (e){
-  print('Erro na requisição: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao se conectar com o servidor')),
-      );
-   }
-  }
-
-
-void salvarCheque(){
-  Chequelist();
 }
+
+Future<void> criaQuestao(int idChecklist) async {
+
+}
+Future<void> criaAlternativa(int idQuestao) async {
+
+}
+
  
  
   @override
@@ -156,7 +154,7 @@ void salvarCheque(){
                             width: 120,
                           ),
                           ElevatedButton(
-                            onPressed:salvarCheque,
+                            onPressed:Chequelist,
                             child: Text("Salvar Checklist"),
                             style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.black,
