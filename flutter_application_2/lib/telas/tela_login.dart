@@ -36,7 +36,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:5092/auth/login'),
+        Uri.parse(
+            'https://run.mocky.io/v3/6ec762ec-18b4-499e-ae8d-68ed2fc24496'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -50,17 +51,16 @@ class _LoginScreenState extends State<LoginScreen> {
         final data = jsonDecode(response.body);
         final String token = data['accessToken'];
         // Salva o token em SharedPreferences para uso posterior
-       final prefs = await SharedPreferences.getInstance();
-       await prefs.setString('token', token);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', token);
 
         // Navegar para a tela inicial passando o token
-       Navigator.pushReplacement(
-  context,
-  MaterialPageRoute(
-    builder: (context) => ClientChecklistScreen(token: token),
-  ),
-);
-
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ClientChecklistScreen(token: token),
+          ),
+        );
       } else {
         // Exibir mensagem de erro caso o login falhe
         ScaffoldMessenger.of(context).showSnackBar(
@@ -276,7 +276,8 @@ class BotaoLogin extends StatelessWidget {
     return ElevatedButton(
       onPressed: () => loginFunction(),
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Color.fromRGBO(240, 231, 16, 1)),
+        backgroundColor:
+            MaterialStateProperty.all(Color.fromRGBO(240, 231, 16, 1)),
         foregroundColor: MaterialStateProperty.all(Colors.black),
         fixedSize: MaterialStateProperty.all(Size(140, 50)),
         shape: MaterialStateProperty.all(

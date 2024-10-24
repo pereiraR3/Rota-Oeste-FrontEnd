@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/telas/tela_cadastro_cliente.dart';
 import 'telas/tela_busca.dart';
 import 'telas/tela_criacao_checklist.dart';
 import 'telas/tela_relatorio.dart';
@@ -8,7 +9,6 @@ import 'telas/tela_inicial.dart';
 void main() {
   runApp(MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   @override
@@ -26,17 +26,25 @@ class MyApp extends StatelessWidget {
           case '/checklist':
             final token = settings.arguments as String;
             return MaterialPageRoute(
-              builder: (context) => TelaCriacaoChecklist(token: token), // Assumindo que você tem um ChecklistScreen
+              builder: (context) => TelaCriacaoChecklist(
+                  token: token), // Assumindo que você tem um ChecklistScreen
             );
           case '/relatorio':
             final token = settings.arguments as String;
             return MaterialPageRoute(
-              builder: (context) => RelatorioScreen(token: token), // Assumindo que você tem um RelatorioScreen
+              builder: (context) => RelatorioScreen(
+                  token: token), // Assumindo que você tem um RelatorioScreen
             );
           case '/telabusca':
             final token = settings.arguments as String;
             return MaterialPageRoute(
-              builder: (context) => TelaBuscaScreen(token: token), // Assumindo que você tem uma TelaBuscaScreen
+              builder: (context) => TelaBuscaScreen(
+                  token: token), // Assumindo que você tem uma TelaBuscaScreen
+            );
+          case '/cadastro':
+            return MaterialPageRoute(
+              builder: (context) =>
+                  TelaCadastroCliente(), // Assumindo que você tem uma TelaBuscaScreen
             );
           default:
             return MaterialPageRoute(
