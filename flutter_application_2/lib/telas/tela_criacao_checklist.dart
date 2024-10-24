@@ -72,7 +72,7 @@ Future<void> Chequelist() async {
       final data = jsonDecode(response.body);
       var e = data['message'] ?? 'Erro desconhecido';
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro: $e')),
+        SnackBar(content: Text('Erro checklista: $e')),
       );
     }
   } catch (e) {
@@ -117,7 +117,7 @@ Future<void> criaQuestao(int idChecklist) async {
       if (response.statusCode >= 200 && response.statusCode < 400) {
         final data = jsonDecode(response.body);
         var idQuestao = data['id'];
-        print(idQuestao);
+        criaAlternativa(idQuestao, question.options);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Erro: $idQuestao')),
         );
@@ -126,7 +126,7 @@ Future<void> criaQuestao(int idChecklist) async {
         final data = jsonDecode(response.body);
         var e = data['message'] ?? 'Erro desconhecido';
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro: $e')),
+          SnackBar(content: Text('Erro questao: $e')),
         );
       }
     }
@@ -139,10 +139,44 @@ Future<void> criaQuestao(int idChecklist) async {
   }
 }
 
-Future<void> criaAlternativa(int idQuestao) async {
+Future<void> criaAlternativa(int idQuestao, List<String> options) async {
+  try {
+    for (var alternativa in options) {
+      print(alternativa);
+      
+      // Enviando requisição HTTP POST para adicionar alternativa
+      final response = await http.post(
+        Uri.parse('http://localhost:5092/alternativa/adicionar'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "questaoId": idQuestao,
+          "descricao": alternativa,
+        }),
+      );
 
+      // Verificando o código de status da resposta
+      if (response.statusCode >= 200 && response.statusCode < 400) {
+        final data = jsonDecode(response.body);
+        var idAlternativa = data['id'];
+        print('ID da Alternativa: $idAlternativa');
+      } else {
+        final data = jsonDecode(response.body);
+        var e = data['message'] ?? 'Erro desconhecido';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro alternativa: $e')),
+        );
+      }
+    }
+  } catch (e) {
+    print('Erro na requisição: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Erro ao se conectar com o servidor')),
+    );
+  }
 }
-
 
 void ca(){
   int index = 0;
