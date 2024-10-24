@@ -65,7 +65,7 @@ Future<void> Chequelist() async {
     if (response.statusCode >= 200 && response.statusCode < 400) {
       final data = jsonDecode(response.body);
       var idCheckList = data['id'];
-
+      criaQuestao(idCheckList);
       print('ID do Checklist: $idCheckList');
     } else if (response.statusCode >= 400) {
       // Caso de erro
@@ -85,12 +85,74 @@ Future<void> Chequelist() async {
 }
 
 Future<void> criaQuestao(int idChecklist) async {
+  try {
+    int tipoQuestaoID;
+    for (var question in questions) {
+      String tituloQuestao = question.questionText;
+      String tipoQuestao = question.questionType; // Conversão correta
+      if (tipoQuestao == 'Imagem'){
+         tipoQuestaoID = 3;
+      }else if (tipoQuestao == 'Múltipla Escolha'){
+         tipoQuestaoID = 2;
+      }else if (tipoQuestao == 'Objetiva'){
+         tipoQuestaoID = 1;
+      }else {
+    tipoQuestaoID = 1; // Um valor padrão, caso necessário
+  }
+      // Fazendo a requisição HTTP POST para cada questão
+      final response = await http.post(
+        Uri.parse('http://localhost:5092/questao/adicionar'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "checkListId": idChecklist,
+          "titulo": tituloQuestao,
+          "tipo": tipoQuestaoID
+        }),
+      );
 
+      // Verificando o código de status da resposta
+      if (response.statusCode >= 200 && response.statusCode < 400) {
+        final data = jsonDecode(response.body);
+        var idQuestao = data['id'];
+        print(idQuestao);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro: $idQuestao')),
+        );
+      } else if (response.statusCode >= 400) {
+        // Caso de erro
+        final data = jsonDecode(response.body);
+        var e = data['message'] ?? 'Erro desconhecido';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro: $e')),
+        );
+      }
+    }
+  } catch (e) {
+    // Tratamento de exceções de conexão ou de parsing JSON
+    print('Erro na requisição: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Erro ao se conectar com o servidor')),
+    );
+  }
 }
+
 Future<void> criaAlternativa(int idQuestao) async {
 
 }
+}
 
+void ca(){
+  int index = 0;
+  for (var q in questions){
+     index += 1;
+    print(q.options);
+    print(q.questionText);
+    print(q.questionType);
+  }
+}
  
  
   @override
