@@ -57,9 +57,10 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
   }
 
   Future<void> Chequelist() async {
-   
-    final response   = await http.post(Uri.parse('$BaseUrl/checklist/adicionar'),
+   try{
 
+    print('$BaseUrl/checklist/adicionar');
+    final response   = await http.post(Uri.parse('$BaseUrl/checklist/adicionar'),
     headers: 
             {'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -73,13 +74,19 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
     final data = jsonDecode(response.body);
     var idCheckList = data['checklistId'];
     print(idCheckList);
-  }else if (response.statusCode > 400){
+  }else if (response.statusCode >= 400){
     final data = jsonDecode(response.body);
-    var e = data['message'];
+     var e = data['message'] ?? 'Erro desconhecido';
      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro: $e')),
       );
   }
+   } catch (e){
+  print('Erro na requisição: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao se conectar com o servidor')),
+      );
+   }
   }
 
 
