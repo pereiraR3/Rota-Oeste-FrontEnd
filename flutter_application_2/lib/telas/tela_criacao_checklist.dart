@@ -55,7 +55,13 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
     }
   }
 void salvarCheque(){
+  
   print(nomeCheckListController.text);
+  for (var q in questions){
+    
+    print(q.questionText+' '+ q.questionType);
+  }
+
 }
   @override
   Widget build(BuildContext context) {
@@ -242,7 +248,7 @@ class _QuestionCardState extends State<QuestionCard> {
             SizedBox(height: 16),
             if (selectedType == 'Objetiva' ||
                 selectedType == 'Múltipla Escolha') ...[
-              Text('Respostas:'),
+              Text('Alternativas:'),
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
@@ -278,16 +284,16 @@ class _QuestionCardState extends State<QuestionCard> {
                     widget.question.addOption();
                   });
                 },
-                child: Text('Adicionar resposta'),
+                child: Text('Adicionar alternativa'),
               ),
             ] else if (selectedType == 'Imagem') ...[
-              Text('Enviar imagem:'),
+              Text('Resposta aceita no formato de:'),
               SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
                   // Lógica para upload de imagem
                 },
-                child: Text('Selecionar imagem'),
+                child: Text('Resposta do tipo imagem'),
               ),
             ],
             Align(

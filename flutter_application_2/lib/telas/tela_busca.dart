@@ -39,7 +39,7 @@ class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
     super.initState();
     fetchAllClientes();
     fetchAllChecklist();
-    print(_isChecked);
+    
     
   }
 bool _verificarSelecaoValida() {
@@ -78,8 +78,8 @@ bool _verificarSelecaoValida() {
         }
       }
     } catch (e) {
-      print("Erro: $e");
-      throw Exception('Erro ao carregar checklists');
+     
+      throw Exception('Erro ao carregar checklists $e');
     }
   }
 
@@ -117,7 +117,7 @@ bool _verificarSelecaoValida() {
         }
       }
     } catch (e) {
-      print("Erro: $e");
+     
       throw Exception('Erro ao carregar clientes');
     }
   }
@@ -156,7 +156,12 @@ List<Map<String, int>> obterRelacoesClientesChecklists() {
           'checkListId': checkListId,
         });
       } else {
-        print("Erro: ID inválido encontrado no índice $i");
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Erro: ID invalido $i"),
+          backgroundColor: const Color.fromARGB(255, 201, 62, 7),
+        ),
+      );
       }
     }
   }
@@ -176,8 +181,7 @@ Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async
       },
     );
 
-    if (response.statusCode >= 200) {
-      print("Relação Cliente-Checklist criada com sucesso.");
+    if (response.statusCode >= 200 && response.statusCode < 400) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Relação Cliente-Checklist criada com sucesso!"),
@@ -185,7 +189,6 @@ Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async
         ),
       );
     } else {
-      print("Erro ao criar a relação: ${response.statusCode}");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Erro ao criar a relação. Código: ${response.statusCode}"),
@@ -194,7 +197,7 @@ Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async
       );
     }
   } catch (e) {
-    print("Erro: $e");
+    
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("Erro ao enviar a relação: $e"),
@@ -354,7 +357,7 @@ Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async
                             onPressed: _verificarSelecaoValida() ? (){
                               List<Map<String, int>> relacoes = obterRelacoesClientesChecklists();
 
-                                print("Relações Cliente-Checklist: $relacoes");
+                                
                                   // Envia cada relação para o backend
                                     for (var relacao in relacoes) {
                                       enviarRelacaoClienteChecklist(relacao['clienteId']!, relacao['checkListId']!);

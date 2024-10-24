@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final response = await http.post(
         Uri.parse(
-            'https://run.mocky.io/v3/6ec762ec-18b4-499e-ae8d-68ed2fc24496'),
+            'http://localhost:5092/auth/login'),
         headers: {
           'Content-Type': 'application/json',
         },
