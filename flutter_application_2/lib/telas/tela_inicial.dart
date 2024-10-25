@@ -158,7 +158,11 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
         children: [
           Icon(Icons.person), // Ícone para nome
           const SizedBox(width: 5),
-          Text(cliente['nome'] ?? 'Nome não disponível'),
+          Flexible(
+             child:  Text(cliente['nome'] ?? 'Nome não disponível', overflow: TextOverflow.ellipsis),
+            
+          )
+          
         ],
       ),
     ),
@@ -167,7 +171,9 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
         children: [
           Icon(Icons.phone), // Ícone para checklist
           const SizedBox(width: 5),
-          Text(cliente['telefone'].length.toString() ?? 'Telefone não disponível'),
+          Flexible(child: 
+          Text(cliente['telefone'].length.toString() ?? 'Telefone não disponível', overflow: TextOverflow.ellipsis),
+          )
         ],
       ),
     ),
@@ -176,7 +182,10 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
         children: [
           Icon(Icons.checklist), // Ícone para data
           const SizedBox(width: 5),
-          Text(cliente['checklist'] ?? 'checklist não disponível'),
+          Flexible(child: 
+          
+          Text(cliente['checklist'] ?? 'checklist não disponível',overflow: TextOverflow.ellipsis),
+          )
         ],
       ),
     ),
@@ -222,7 +231,10 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
         children: [
           Icon(Icons.checklist), // Ícone para nome
           const SizedBox(width: 5),
-          Text(checklist['nome'] ?? 'Nome não disponível'),
+          Flexible(child: 
+          
+          Text(checklist['nome'] ?? 'Nome não disponível', overflow: TextOverflow.ellipsis),
+          )
         ],
       ),
     ),
@@ -231,7 +243,9 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
         children: [
           Icon(Icons.numbers), // Ícone para checklist
           const SizedBox(width: 5),
-          Text("${checklist['questoes'].length} questões"),
+          Flexible(child: 
+          Text("${checklist['questoes'].length} questões", overflow: TextOverflow.ellipsis),
+          )
         ],
       ),
     ),
@@ -240,7 +254,9 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
         children: [
           Icon(Icons.date_range), // Ícone para data
           const SizedBox(width: 5),
-          Text(checklist['dataCriacao'] ?? 'Data não disponível'),
+          Flexible(child: 
+          Text(checklist['dataCriacao'] ?? 'Data não disponível', overflow: TextOverflow.ellipsis),
+          )
         ],
       ),
     ),
