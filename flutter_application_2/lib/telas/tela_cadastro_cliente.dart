@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/componentes/side_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TelaCadastroCliente extends StatefulWidget {
   const TelaCadastroCliente({super.key});
@@ -9,6 +10,20 @@ class TelaCadastroCliente extends StatefulWidget {
 }
 
 class _TelaCadastroClienteState extends State<TelaCadastroCliente> {
+  String? token;
+  @override
+  void initState() {
+    super.initState();
+    _loadToken();
+  }
+  Future<void> _loadToken() async {
+  final prefs = await SharedPreferences.getInstance();
+  setState(() {
+    token = prefs.getString('token');
+    
+  });
+  print('Token carregado para requisição: $token');
+}
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;

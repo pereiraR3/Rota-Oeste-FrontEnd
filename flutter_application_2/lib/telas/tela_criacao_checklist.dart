@@ -434,7 +434,7 @@ class _QuestionCardState extends State<QuestionCard> {
             ),
           ],
         ),
-    ),
-);
-}
+      ),
+    );
+  }
 }
