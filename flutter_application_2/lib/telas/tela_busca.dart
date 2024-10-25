@@ -239,7 +239,7 @@ Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async
 
                   // Container maior com o checklist e o campo de busca
                   Container(
-                    width: screenSize.width * 0.5, // 80% da largura da tela
+                    width: screenSize.width * 0.8, // 80% da largura da tela
                     height: screenSize.height * 0.8, // 80% da altura da tela
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
@@ -300,7 +300,7 @@ Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async
                                           borderRadius:
                                               BorderRadius.circular(15),
                                         ),
-                                        width: 600,
+                                        width: MediaQuery.of(context).size.width * 0.6,
                                         height: 60,
                                         padding: EdgeInsets.all(8),
                                         child: Row(
@@ -313,37 +313,48 @@ Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async
                                                     index], // Texto do contato filtrado
                                                 style: TextStyle(
                                                     fontSize: 16,
-                                                    color: Colors.white),
+                                                    color: Colors.white,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    ),
                                               ),
                                             ),
 
                                             // Terceira Coluna: DropdownButton
-                                            DropdownButton<String>(
-                                              hint: Text(
-                                                "Selecione",
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                              value: _selectedItems[index],
-                                              dropdownColor: Colors.grey[800],
-                                              items: dropdownItems
-                                                  .map((String item) {
-                                                return DropdownMenuItem<String>(
-                                                  value: item,
-                                                  child: Text(
-                                                    item,
-                                                    style: TextStyle(
-                                                        color: Colors.white),
-                                                  ),
-                                                );
-                                              }).toList(),
-                                              onChanged: (String? newValue) {
-                                                setState(() {
-                                                  _selectedItems[index] =
-                                                      newValue;
-                                                });
-                                              },
-                                            ),
+                                        // Terceira Coluna: DropdownButton
+DropdownButton<String>(
+  hint: MediaQuery.of(context).size.width > 300
+      ? Text(
+          "selecione",
+          style: TextStyle(color: Colors.white),
+        )
+      : Icon(Icons.arrow_drop_down, color: Colors.white), // Ícone em telas menores
+  value: _selectedItems[index],
+  dropdownColor: Colors.grey[800],
+  isExpanded: false, // Mantém o dropdown menor
+  items: dropdownItems.map((String item) {
+    return DropdownMenuItem<String>(
+      value: item,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.3, // Define uma largura máxima
+        ),
+        child: Text(
+          item,
+          style: TextStyle(color: Colors.white),
+          overflow: TextOverflow.ellipsis, // Adiciona reticências para texto longo
+        ),
+      ),
+    );
+  }).toList(),
+  onChanged: (String? newValue) {
+    setState(() {
+      _selectedItems[index] = newValue;
+    });
+  },
+),
+
+
+
                                           ],
                                         ),
                                       )
