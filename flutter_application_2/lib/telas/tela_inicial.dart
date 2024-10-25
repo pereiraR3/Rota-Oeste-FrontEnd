@@ -67,6 +67,54 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
     }
   }
 
+
+  Future<List<dynamic>> fetchInteracao() async {
+    // Simulando a busca de checklists
+    final response = await http.get(
+      Uri.parse('http://localhost:5092/interacao/buscarTodos'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Erro ao carregar checklists');
+    }
+  }
+
+
+ 
+ Future<List<Map<String, dynamic>>> fetchClientesFiltrados() async {
+  final clientes = await fetchClientes();
+  final interacoes = await fetchInteracao();
+  final checklists = await fetchChecklists();
+
+  // Cria um mapa para acesso rápido ao nome do checklist pelo ID
+  final checklistsMap = {
+    for (var checklist in checklists) checklist['id']: checklist['nome']
+  };
+
+  // Cria um mapa para acesso rápido aos dados do cliente pelo ID
+  final clientesMap = {
+    for (var cliente in clientes) cliente['id']: cliente
+  };
+
+  // Mapeia todas as interações para retornar os dados necessários
+  return interacoes.map((interacao) {
+    final cliente = clientesMap[interacao['clienteId']];
+    final checklistNome = checklistsMap[interacao['checkListId']] ?? 'Checklist não disponível';
+
+    return {
+      'nome': cliente?['nome'] ?? 'Nome não disponível',
+      'telefone': cliente?['telefone'] ?? 'Telefone não disponível',
+      'checklist': checklistNome,
+    };
+  }).toList();
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,10 +131,47 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
                     'Clientes que receberam envios mais recentes',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
+                  Container(
+  color: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo suave
+  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+  child: Row(
+    children: [
+      Expanded(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Cliente",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ),
+      Expanded(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Telefone",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ),
+      Expanded(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Checklist",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ),
+    ],
+  ),
+),
+const SizedBox(height: 5),
+
                   const SizedBox(height: 10),
                   Expanded(
                     child: FutureBuilder<List<dynamic>>(
-                      future: fetchClientes(),
+                      future: fetchClientesFiltrados(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return const Center(child: CircularProgressIndicator());
@@ -101,14 +186,49 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
                               var cliente = snapshot.data![index];
                               return Card(
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
-                                child: ListTile(
-                                  leading: const Icon(Icons.person),
-                                  title: Text(cliente['nome'] ?? 'Nome não disponível'),
-                                  subtitle: Text(cliente['telefone'] ?? 'Telefone não disponível'),
-                                  trailing: const Text("Desgaste de Eixo"),
-                                ),
+                                child: Row(
+  children: [
+    Expanded(
+      child: Row(
+        children: [
+          Icon(Icons.person), // Ícone para nome
+          const SizedBox(width: 5),
+          Flexible(
+             child:  Text(cliente['nome'] ?? 'Nome não disponível', overflow: TextOverflow.ellipsis),
+            
+          )
+          
+        ],
+      ),
+    ),
+    Expanded(
+      child: Row(
+        children: [
+          Icon(Icons.phone), // Ícone para checklist
+          const SizedBox(width: 5),
+          Flexible(child: 
+          Text(cliente['telefone'].length.toString() ?? 'Telefone não disponível', overflow: TextOverflow.ellipsis),
+          )
+        ],
+      ),
+    ),
+    Expanded(
+      child: Row(
+        children: [
+          Icon(Icons.checklist), // Ícone para data
+          const SizedBox(width: 5),
+          Flexible(child: 
+          
+          Text(cliente['checklist'] ?? 'checklist não disponível',overflow: TextOverflow.ellipsis),
+          )
+        ],
+      ),
+    ),
+  ],
+),
+                                
                               );
                             },
                           );
@@ -121,7 +241,49 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
                     'Checklists mais recentes',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 10),
+
+Container(
+  color: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo suave
+  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+  child: Row(
+    children: [
+      Expanded(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Nome",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ),
+      Expanded(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Número de Questões",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ),
+      Expanded(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Data de Criação",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ),
+    ],
+  ),
+),
+const SizedBox(height: 5),
+
+
+
+
+
+                  
                   Expanded(
                     child: FutureBuilder<List<dynamic>>(
                       future: fetchChecklists(),
@@ -141,17 +303,44 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: ListTile(
-                                  leading: const Icon(Icons.assignment),
-                                  title: Text(checklist['nome'] ?? 'Nome não disponível'),
-                                  subtitle: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text("${checklist['questoes'].length} questões"),
-                                      Text("Data de criação: ${checklist['dataCriacao']}"),
-                                    ],
-                                  ),
-                                ),
+                               child: Row(
+  children: [
+    Expanded(
+      child: Row(
+        children: [
+          Icon(Icons.checklist), // Ícone para nome
+          const SizedBox(width: 5),
+          Flexible(child: 
+          
+          Text(checklist['nome'] ?? 'Nome não disponível', overflow: TextOverflow.ellipsis),
+          )
+        ],
+      ),
+    ),
+    Expanded(
+      child: Row(
+        children: [
+          Icon(Icons.numbers), // Ícone para checklist
+          const SizedBox(width: 5),
+          Flexible(child: 
+          Text("${checklist['questoes'].length} questões", overflow: TextOverflow.ellipsis),
+          )
+        ],
+      ),
+    ),
+    Expanded(
+      child: Row(
+        children: [
+          Icon(Icons.date_range), // Ícone para data
+          const SizedBox(width: 5),
+          Flexible(child: 
+          Text(checklist['dataCriacao'] ?? 'Data não disponível', overflow: TextOverflow.ellipsis),
+          )
+        ],
+      ),
+    ),
+  ],
+),
                               );
                             },
                           );
