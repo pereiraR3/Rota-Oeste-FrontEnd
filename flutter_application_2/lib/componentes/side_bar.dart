@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Widget completo da sidebar que inclui todos os componentes
 class SideBar extends StatelessWidget {
   final String token;
 
@@ -8,30 +7,39 @@ class SideBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 250,
-      color: Colors.grey[800],
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Foto de perfil
-          const fotoPerfil(),
-          // Espaçamento
-          const SizedBox(height: 20),
-          // Botões da sidebar
-          botoes(token: token),
-          // Espaçamento
-          const Spacer(),
-          // Botão sair
-          const botaoSair(),
-        ],
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        bool isExpanded = MediaQuery.of(context).size.width > 600; // Controle de largura da tela
+
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          width: isExpanded ? 250 : 70,
+          color: Colors.grey[800],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (isExpanded) const fotoPerfil(), // Exibe a foto de perfil apenas se expandido
+              const SizedBox(height: 20),
+              botoes(token: token, isExpanded: isExpanded),
+              const Spacer(),
+              if (isExpanded)
+                const botaoSair()
+              else
+                IconButton(
+                  icon: const Icon(Icons.exit_to_app, color: Colors.white),
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, '/login');
+                  },
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
 
-// Foto de perfil
 class fotoPerfil extends StatelessWidget {
   const fotoPerfil({super.key});
 
@@ -50,112 +58,49 @@ class fotoPerfil extends StatelessWidget {
   }
 }
 
-// Botões da sidebar
 class botoes extends StatelessWidget {
   final String token;
+  final bool isExpanded;
 
-  const botoes({super.key, required this.token});
+  const botoes({super.key, required this.token, required this.isExpanded});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          height: 50,
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, '/home',
-                  arguments: token);
-            },
-            child: const Text("Home"),
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: const Color.fromRGBO(60, 60, 60, 1),
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero,
-                  side: BorderSide(color: Colors.white12)),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 50,
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, '/checklist',
-                  arguments: token);
-            },
-            child: const Text("CheckLists"),
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: const Color.fromRGBO(60, 60, 60, 1),
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero,
-                  side: BorderSide(color: Colors.white12)),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 50,
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, '/relatorio',
-                  arguments: token);
-            },
-            child: const Text("Relatório"),
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: const Color.fromRGBO(60, 60, 60, 1),
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero,
-                  side: BorderSide(color: Colors.white12)),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 50,
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, '/telabusca',
-                  arguments: token);
-            },
-            child: const Text("Contatos"),
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: const Color.fromRGBO(60, 60, 60, 1),
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero,
-                  side: BorderSide(color: Colors.white12)),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 50,
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, '/cadastro',
-                  arguments: token);
-            },
-            child: const Text("Cadastro de contatos"),
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: const Color.fromRGBO(60, 60, 60, 1),
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero,
-                  side: BorderSide(color: Colors.white12)),
-            ),
-          ),
-        ),
+        _buildButton(context, "Home", Icons.home, '/home'),
+        _buildButton(context, "CheckLists", Icons.list, '/checklist'),
+        _buildButton(context, "Relatório", Icons.insert_drive_file, '/relatorio'),
+        _buildButton(context, "Contatos", Icons.contact_page, '/telabusca'),
+        _buildButton(context, "Cadastro", Icons.person_add, '/cadastro'),
       ],
+    );
+  }
+
+  Widget _buildButton(BuildContext context, String label, IconData icon, String route) {
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      
+      child: ElevatedButton.icon(
+        icon: Icon(icon, size: 22),
+        label: isExpanded ? Text(label , overflow: TextOverflow.ellipsis, // Adiciona reticências se o texto ultrapassar
+              maxLines: 1, ) : const SizedBox.shrink(),
+        onPressed: () {
+          Navigator.pushReplacementNamed(context, route, arguments: token);
+        },
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.white,
+          backgroundColor: const Color.fromRGBO(60, 60, 60, 1),
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero,
+              side: BorderSide(color: Colors.white12)),
+        ),
+      ),
     );
   }
 }
 
-// Botão sair da sidebar
 class botaoSair extends StatelessWidget {
   const botaoSair({super.key});
 
@@ -172,8 +117,7 @@ class botaoSair extends StatelessWidget {
         style: ElevatedButton.styleFrom(
             foregroundColor: Colors.black,
             backgroundColor: const Color.fromRGBO(240, 231, 16, 1),
-            shape:
-                const RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
       ),
     );
   }

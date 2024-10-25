@@ -102,17 +102,18 @@ if (data != null && data is List) {
           SideBar(token: widget.token),
           Expanded(
             child: Container(
+              padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.02),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     'Gere os relatórios aqui',
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: screenSize.width * 0.04, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: screenSize.height * 0.02),
                   Container(
-                    width: 500,
+                    width: screenSize.width * 0.8,
                     child: TextField(
                       decoration: InputDecoration(
                         hintText: 'Procurar por relatório',
@@ -126,10 +127,10 @@ if (data != null && data is List) {
                       onChanged: filterRelatorios, // Chama a função de busca
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: screenSize.height * 0.02),
                   Container(
-                    width: screenSize.width * 0.7,
-                    height: screenSize.height * 0.7,
+                    width: screenSize.width * 0.9,
+                    height: screenSize.height * 0.6,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       border: Border.all(color: Colors.black, width: 2),
@@ -219,11 +220,14 @@ if (data != null && data is List) {
                                       ),
                                       Expanded(
                                         child: Center(
-                                          child: ElevatedButton(
+                                          child: ElevatedButton.icon(
                                             onPressed: () {
                                               // Ação para abrir o relatório
                                             },
+                                             icon: Icon(Icons.picture_as_pdf),
+                                             label: Text('Gerar'),
                                             style: ElevatedButton.styleFrom(
+
                                                 foregroundColor: Colors.black,
                                                 backgroundColor:
                                                     const Color.fromRGBO(
@@ -232,7 +236,7 @@ if (data != null && data is List) {
                                                     const RoundedRectangleBorder(
                                                         borderRadius:
                                                             BorderRadius.zero)),
-                                            child: Text('Gerar'),
+                                            
                                           ),
                                         ),
                                       ),
@@ -246,7 +250,7 @@ if (data != null && data is List) {
 
                         // Selecionador de páginas
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(screenSize.width * 0.02),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
