@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: '/login', // Definindo a rota inicial como a tela de login
       onGenerateRoute: (settings) {
         // Verificar qual rota está sendo chamada e passar os argumentos necessários

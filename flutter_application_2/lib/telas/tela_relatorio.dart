@@ -102,6 +102,7 @@ if (data != null && data is List) {
           SideBar(token: widget.token),
           Expanded(
             child: Container(
+              padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.02),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -219,11 +220,14 @@ if (data != null && data is List) {
                                       ),
                                       Expanded(
                                         child: Center(
-                                          child: ElevatedButton(
+                                          child: ElevatedButton.icon(
                                             onPressed: () {
                                               // Ação para abrir o relatório
                                             },
+                                             icon: Icon(Icons.picture_as_pdf),
+                                             label: Text('Gerar'),
                                             style: ElevatedButton.styleFrom(
+
                                                 foregroundColor: Colors.black,
                                                 backgroundColor:
                                                     const Color.fromRGBO(
@@ -232,7 +236,7 @@ if (data != null && data is List) {
                                                     const RoundedRectangleBorder(
                                                         borderRadius:
                                                             BorderRadius.zero)),
-                                            child: Text('Gerar'),
+                                            
                                           ),
                                         ),
                                       ),
