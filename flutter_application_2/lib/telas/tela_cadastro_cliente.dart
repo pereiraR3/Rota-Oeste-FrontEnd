@@ -1,21 +1,90 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/componentes/side_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class TelaCadastroCliente extends StatefulWidget {
-  const TelaCadastroCliente({super.key});
+  final String token;
+
+  const TelaCadastroCliente({super.key, required this.token});
 
   @override
   State<TelaCadastroCliente> createState() => _TelaCadastroClienteState();
 }
 
 class _TelaCadastroClienteState extends State<TelaCadastroCliente> {
+  late TextEditingController _nomeController;
+  late TextEditingController _telefoneController;
+
+  String? token;
+
+  @override
+  void initState() {
+    super.initState();
+    _nomeController = TextEditingController();
+    _telefoneController = TextEditingController();
+    _loadToken();
+  }
+
+  Future<void> _loadToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      token = prefs.getString('token') ?? widget.token;
+    });
+    print('Token carregado para requisição: $token');
+  }
+
+  Future<void> CriarCliente() async {
+    try {
+      // Fazendo a requisição HTTP POST
+      final response = await http.post(
+        Uri.parse('http://localhost:5092/cliente/adicionar'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "usuarioId": 2,
+          "nome": _nomeController.text,
+          "telefone": _telefoneController.text,
+          "foto": "null"
+        }),
+      );
+
+      // Verificando o código de status da resposta
+      if (response.statusCode >= 200 && response.statusCode < 400) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Sucesso'),backgroundColor:Color(0xFF32A869)),
+        );
+      } else if (response.statusCode >= 400) {
+        final data = jsonDecode(response.body);
+        var e = data['message'] ?? 'Erro desconhecido';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro checklista: $e'), backgroundColor:Color.fromARGB(255, 168, 87, 50),),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao se conectar com o servidor: $e')),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _nomeController.dispose();
+    _telefoneController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     return Scaffold(
       body: Row(
         children: [
-          SideBar(token: ''),
+          SideBar(token: token ?? ''), // Passando o token para a SideBar
           Expanded(
             child: Container(
               child: Column(
@@ -39,7 +108,7 @@ class _TelaCadastroClienteState extends State<TelaCadastroCliente> {
                   SizedBox(height: 40),
                   Container(
                     padding: EdgeInsets.all(20),
-                    width: screenSize.width * 0.4, // 80% da largura da tela
+                    width: screenSize.width * 0.4,
                     height: screenSize.height * 0.6,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
@@ -62,6 +131,7 @@ class _TelaCadastroClienteState extends State<TelaCadastroCliente> {
                         SizedBox(
                           width: 250,
                           child: TextField(
+                            controller: _nomeController,
                             decoration: InputDecoration(
                               filled: true,
                               fillColor: const Color.fromRGBO(240, 231, 16, 80),
@@ -87,6 +157,7 @@ class _TelaCadastroClienteState extends State<TelaCadastroCliente> {
                         SizedBox(
                           width: 250,
                           child: TextField(
+                            controller: _telefoneController,
                             decoration: InputDecoration(
                               filled: true,
                               fillColor: const Color.fromRGBO(240, 231, 16, 80),
@@ -97,11 +168,9 @@ class _TelaCadastroClienteState extends State<TelaCadastroCliente> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 20,
-                        ),
+                        SizedBox(height: 20),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: CriarCliente, // Chama a função CriarCliente
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
                                 Color.fromRGBO(240, 231, 16, 1)),
