@@ -79,11 +79,13 @@ class botoes extends StatelessWidget {
 
   Widget _buildButton(BuildContext context, String label, IconData icon, String route) {
     return SizedBox(
-      height: 50,
       width: double.infinity,
+      height: 50,
+      
       child: ElevatedButton.icon(
-        icon: Icon(icon, size: 24),
-        label: isExpanded ? Text(label) : const SizedBox.shrink(),
+        icon: Icon(icon, size: 22),
+        label: isExpanded ? Text(label , overflow: TextOverflow.ellipsis, // Adiciona reticências se o texto ultrapassar
+              maxLines: 1, ) : const SizedBox.shrink(),
         onPressed: () {
           Navigator.pushReplacementNamed(context, route, arguments: token);
         },
