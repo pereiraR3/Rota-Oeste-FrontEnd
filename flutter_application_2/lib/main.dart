@@ -43,9 +43,10 @@ class MyApp extends StatelessWidget {
                   token: token), // Assumindo que você tem uma TelaBuscaScreen
             );
           case '/cadastro':
+          final token = settings.arguments as String;
             return MaterialPageRoute(
               builder: (context) =>
-                  TelaCadastroCliente(), // Assumindo que você tem uma TelaBuscaScreen
+                  TelaCadastroCliente(token: token) , // Assumindo que você tem uma TelaBuscaScreen
             );
           default:
             return MaterialPageRoute(
