@@ -131,6 +131,43 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
                     'Clientes que receberam envios mais recentes',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
+                  Container(
+  color: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo suave
+  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+  child: Row(
+    children: [
+      Expanded(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Cliente",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ),
+      Expanded(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Telefone",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ),
+      Expanded(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Checklist",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ),
+    ],
+  ),
+),
+const SizedBox(height: 5),
+
                   const SizedBox(height: 10),
                   Expanded(
                     child: FutureBuilder<List<dynamic>>(
@@ -204,7 +241,49 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
                     'Checklists mais recentes',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 10),
+
+Container(
+  color: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo suave
+  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+  child: Row(
+    children: [
+      Expanded(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Nome",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ),
+      Expanded(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Número de Questões",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ),
+      Expanded(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Data de Criação",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ),
+    ],
+  ),
+),
+const SizedBox(height: 5),
+
+
+
+
+
+                  
                   Expanded(
                     child: FutureBuilder<List<dynamic>>(
                       future: fetchChecklists(),
