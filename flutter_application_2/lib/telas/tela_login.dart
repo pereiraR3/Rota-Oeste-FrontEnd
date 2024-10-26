@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://localhost:5092/auth/login'),
+            'https://run.mocky.io/v3/6ec762ec-18b4-499e-ae8d-68ed2fc24496'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -76,55 +76,59 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    body: LayoutBuilder(
-      builder: (context, constraints) {
-        bool isSmallScreen = constraints.maxWidth < 600;
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          bool isSmallScreen = constraints.maxWidth < 600;
 
-        return Container(
-          color: Colors.white,
-          alignment: Alignment.center,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-               if (!isSmallScreen) Flexible(child: ImgLogin()), // Usa Flexible para evitar largura infinita
-                if (!isSmallScreen) SizedBox(width: 50), // Espaçamento ao lado da imagem
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Color.fromRGBO(55, 55, 55, 1),
-                ),constraints: BoxConstraints(
-                      maxWidth: 400, // Limita a largura máxima para telas grandes
-                      minWidth: isSmallScreen ? constraints.maxWidth * 0.9 : 400,
-                    ),
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ImgLogo(),
-                    TextosTelaLogin(),
-                    InputsLogin(
-                      usernameController: usernameController,
-                      passwordController: passwordController,
-                    ),
-                    BotaoLogin(
-                      usernameController: usernameController,
-                      passwordController: passwordController,
-                      loginFunction: login,
-                    ),
-                  ],
+          return Container(
+            color: Colors.white,
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (!isSmallScreen)
+                  Flexible(
+                      child:
+                          ImgLogin()), // Usa Flexible para evitar largura infinita
+                if (!isSmallScreen)
+                  SizedBox(width: 50), // Espaçamento ao lado da imagem
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Color.fromRGBO(55, 55, 55, 1),
+                  ),
+                  constraints: BoxConstraints(
+                    maxWidth: 400, // Limita a largura máxima para telas grandes
+                    minWidth: isSmallScreen ? constraints.maxWidth * 0.9 : 400,
+                  ),
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ImgLogo(),
+                      TextosTelaLogin(),
+                      InputsLogin(
+                        usernameController: usernameController,
+                        passwordController: passwordController,
+                      ),
+                      BotaoLogin(
+                        usernameController: usernameController,
+                        passwordController: passwordController,
+                        loginFunction: login,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
-    ),
-  );
-}
-
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 }
 
 // Componentes da tela de login

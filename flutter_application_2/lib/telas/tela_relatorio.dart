@@ -28,54 +28,55 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
   }
 
   // Função para buscar todas as interações
-Future<void> fechTodosCheckLists() async {
-  try {
-    final response = await http.get(
-      Uri.parse('https://run.mocky.io/v3/4c8f5a69-f846-4b9a-87a1-04c914de88d1'),
-      headers: {
-        'Authorization': 'Bearer ${widget.token}',
-        'Content-Type': 'application/json',
-      },
-    );
+  Future<void> fechTodosCheckLists() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'https://run.mocky.io/v3/4c8f5a69-f846-4b9a-87a1-04c914de88d1'),
+        headers: {
+          'Authorization': 'Bearer ${widget.token}',
+          'Content-Type': 'application/json',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      
-      final data = json.decode(response.body);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
 
-if (data != null && data is List) {
-  setState(() {
-    relatorios = data.map((item) {
-      // Acessa o nome do checklist como título
-      String titulo = item['nome'] ?? 'Título Desconhecido';
-      
-      // Conta a quantidade de questões presentes no checklist
-      int quantidade = item['questoes'] != null && item['questoes'] is List
-          ? (item['questoes'] as List).length
-          : 0;
-      
-      // Obtém a data de criação
-      String dataCriacao = item['dataCriacao'] ?? 'Data Desconhecida';
+        if (data != null && data is List) {
+          setState(() {
+            relatorios = data.map((item) {
+              // Acessa o nome do checklist como título
+              String titulo = item['nome'] ?? 'Título Desconhecido';
 
-      return {
-        'titulo': titulo,
-        'quantidade': quantidade,
-        'dataCriacao': dataCriacao,
-      };
-    }).toList();
-    filteredRelatorios = List.from(relatorios); // Inicializa a lista filtrada
-  });
+              // Conta a quantidade de questões presentes no checklist
+              int quantidade =
+                  item['questoes'] != null && item['questoes'] is List
+                      ? (item['questoes'] as List).length
+                      : 0;
 
+              // Obtém a data de criação
+              String dataCriacao = item['dataCriacao'] ?? 'Data Desconhecida';
+
+              return {
+                'titulo': titulo,
+                'quantidade': quantidade,
+                'dataCriacao': dataCriacao,
+              };
+            }).toList();
+            filteredRelatorios =
+                List.from(relatorios); // Inicializa a lista filtrada
+          });
+        } else {
+          throw Exception('Formato de dados inválido');
+        }
       } else {
-        throw Exception('Formato de dados inválido');
+        throw Exception('Erro ao carregar interações');
       }
-    } else {
+    } catch (e) {
+      print("Erro: $e");
       throw Exception('Erro ao carregar interações');
     }
-  } catch (e) {
-    print("Erro: $e");
-    throw Exception('Erro ao carregar interações');
   }
-}
 
   // Função para filtrar relatórios/interações
   void filterRelatorios(String query) {
@@ -102,14 +103,17 @@ if (data != null && data is List) {
           SideBar(token: widget.token),
           Expanded(
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.02),
+              padding:
+                  EdgeInsets.symmetric(horizontal: screenSize.width * 0.02),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     'Gere os relatórios aqui',
-                  style: TextStyle(fontSize: screenSize.width * 0.04, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: screenSize.width * 0.04,
+                        fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: screenSize.height * 0.02),
                   Container(
@@ -224,24 +228,27 @@ if (data != null && data is List) {
                                             onPressed: () {
                                               // Ação para abrir o relatório
                                             },
-                                             icon: Icon(Icons.picture_as_pdf),
-                                             label: Text('Gerar'),
+                                            icon: Icon(Icons.picture_as_pdf),
+                                            label: Text('Gerar'),
                                             style: ElevatedButton.styleFrom(
-
-                                                foregroundColor: Colors.black,
-                                                backgroundColor:
-                                                    const Color.fromRGBO(
-                                                        240, 231, 16, 1),
-                                                shape:
-                                                    const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.zero)),
-                                            
+                                              foregroundColor: Colors.black,
+                                              backgroundColor:
+                                                  const Color.fromRGBO(
+                                                      240, 231, 16, 1),
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.zero,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ],
                                   ),
+                                  Divider(
+                                      thickness: 1,
+                                      color: Colors
+                                          .grey), // Linha horizontal entre itens
                                 ],
                               );
                             },
