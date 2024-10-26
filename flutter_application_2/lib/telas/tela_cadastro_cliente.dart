@@ -55,18 +55,25 @@ class _TelaCadastroClienteState extends State<TelaCadastroCliente> {
       // Verificando o código de status da resposta
       if (response.statusCode >= 200 && response.statusCode < 400) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Sucesso'),backgroundColor:Color(0xFF32A869)),
+          SnackBar(
+              content: Text('Sucesso'), backgroundColor: Color(0xFF32A869)),
         );
       } else if (response.statusCode >= 400) {
         final data = jsonDecode(response.body);
         var e = data['message'] ?? 'Erro desconhecido';
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro checklista: $e'), backgroundColor:Color.fromARGB(255, 168, 87, 50),),
+          SnackBar(
+            content: Text('Erro checklista: $e'),
+            backgroundColor: Color.fromARGB(255, 168, 87, 50),
+          ),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao se conectar com o servidor: $e')),
+        SnackBar(
+            content: Text('Erro ao se conectar com o servidor: $e',
+                style: TextStyle(color: Colors.black)),
+            backgroundColor: Color.fromRGBO(240, 231, 16, 80)),
       );
     }
   }
@@ -170,7 +177,8 @@ class _TelaCadastroClienteState extends State<TelaCadastroCliente> {
                         ),
                         SizedBox(height: 20),
                         ElevatedButton(
-                          onPressed: CriarCliente, // Chama a função CriarCliente
+                          onPressed:
+                              CriarCliente, // Chama a função CriarCliente
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
                                 Color.fromRGBO(240, 231, 16, 1)),
