@@ -6,7 +6,7 @@ import 'dart:convert';
 
 class TelaCriacaoChecklist extends StatefulWidget {
   final String token;
-   const TelaCriacaoChecklist({super.key, required this.token});
+  const TelaCriacaoChecklist({super.key, required this.token});
   @override
   _TelaCriacaoChecklistState createState() => _TelaCriacaoChecklistState();
 }
@@ -16,14 +16,12 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
   List<Question> questions = [];
   final String BaseUrl = 'http://localhost:5092';
   final TextEditingController nomeCheckListController = TextEditingController();
-  
-  
-  
+
   void addQuestion() {
     setState(() {
       questions.add(Question());
     });
-    for (var q in questions){
+    for (var q in questions) {
       print(q.questionText);
     }
   }
@@ -33,174 +31,170 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
       questions.removeAt(index);
     });
   }
- @override
+
+  @override
   void initState() {
     super.initState();
     _loadToken();
   }
 
-
   Future<void> _loadToken() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       token = prefs.getString('token');
-      
     });
     print('Token carregado para requisição: $token');
   }
 
-
- 
-Future<void> Chequelist() async {
-  try {
-    print(token);
-    // Fazendo a requisição HTTP POST
-    final response = await http.post(
-      Uri.parse('http://localhost:5092/checklist/adicionar'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        "usuarioId": 2,
-        "nome": nomeCheckListController.text,
-      }),
-    );
-
-    // Verificando o código de status da resposta
-    if (response.statusCode >= 200 && response.statusCode < 400) {
-      final data = jsonDecode(response.body);
-      var idCheckList = data['id'];
-      criaQuestao(idCheckList);
-      print('ID do Checklist: $idCheckList');
-    } else if (response.statusCode >= 400) {
-      // Caso de erro
-      final data = jsonDecode(response.body);
-      var e = data['message'] ?? 'Erro desconhecido';
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro checklista: $e')),
-      );
-    }
-  } catch (e) {
-    // Tratamento de exceções de conexão ou de parsing JSON
-    print('Erro na requisição: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Erro ao se conectar com o servidor')),
-    );
-  }
-}
-
-Future<void> criaQuestao(int idChecklist) async {
-  try {
-    int tipoQuestaoID;
-    for (var question in questions) {
-      String tituloQuestao = question.questionText;
-      String tipoQuestao = question.questionType; // Conversão correta
-      if (tipoQuestao == 'Imagem'){
-         tipoQuestaoID = 3;
-      }else if (tipoQuestao == 'Múltipla Escolha'){
-         tipoQuestaoID = 2;
-      }else if (tipoQuestao == 'Objetiva'){
-         tipoQuestaoID = 1;
-      }else {
-    tipoQuestaoID = 1; // Um valor padrão, caso necessário
-  }
-      // Fazendo a requisição HTTP POST para cada questão
+  Future<void> Chequelist() async {
+    try {
+      print(token);
+      // Fazendo a requisição HTTP POST
       final response = await http.post(
-        Uri.parse('http://localhost:5092/questao/adicionar'),
+        Uri.parse('http://localhost:5092/checklist/adicionar'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          "checkListId": idChecklist,
-          "titulo": tituloQuestao,
-          "tipo": tipoQuestaoID
+          "usuarioId": 2,
+          "nome": nomeCheckListController.text,
         }),
       );
 
       // Verificando o código de status da resposta
       if (response.statusCode >= 200 && response.statusCode < 400) {
         final data = jsonDecode(response.body);
-        var idQuestao = data['id'];
-        criaAlternativa(idQuestao, question.options);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro: $idQuestao')),
-        );
+        var idCheckList = data['id'];
+        criaQuestao(idCheckList);
+        print('ID do Checklist: $idCheckList');
       } else if (response.statusCode >= 400) {
         // Caso de erro
         final data = jsonDecode(response.body);
         var e = data['message'] ?? 'Erro desconhecido';
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro questao: $e')),
+          SnackBar(content: Text('Erro checklista: $e')),
         );
       }
-    }
-  } catch (e) {
-    // Tratamento de exceções de conexão ou de parsing JSON
-    print('Erro na requisição: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Erro ao se conectar com o servidor')),
-    );
-  }
-}
-
-Future<void> criaAlternativa(int idQuestao, List<String> options) async {
-  try {
-    for (var alternativa in options) {
-      print(alternativa);
-      
-      // Enviando requisição HTTP POST para adicionar alternativa
-      final response = await http.post(
-        Uri.parse('http://localhost:5092/alternativa/adicionar'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          "questaoId": idQuestao,
-          "descricao": alternativa,
-        }),
+    } catch (e) {
+      // Tratamento de exceções de conexão ou de parsing JSON
+      print('Erro na requisição: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao se conectar com o servidor')),
       );
-
-      // Verificando o código de status da resposta
-      if (response.statusCode >= 200 && response.statusCode < 400) {
-        final data = jsonDecode(response.body);
-        var idAlternativa = data['id'];
-        print('ID da Alternativa: $idAlternativa');
-      } else {
-        final data = jsonDecode(response.body);
-        var e = data['message'] ?? 'Erro desconhecido';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro alternativa: $e')),
-        );
-      }
     }
-  } catch (e) {
-    print('Erro na requisição: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Erro ao se conectar com o servidor')),
-    );
   }
-}
 
-void ca(){
-  int index = 0;
-  for (var q in questions){
-     index += 1;
-    print(q.options);
-    print(q.questionText);
-    print(q.questionType);
+  Future<void> criaQuestao(int idChecklist) async {
+    try {
+      int tipoQuestaoID;
+      for (var question in questions) {
+        String tituloQuestao = question.questionText;
+        String tipoQuestao = question.questionType; // Conversão correta
+        if (tipoQuestao == 'Imagem') {
+          tipoQuestaoID = 3;
+        } else if (tipoQuestao == 'Múltipla Escolha') {
+          tipoQuestaoID = 2;
+        } else if (tipoQuestao == 'Objetiva') {
+          tipoQuestaoID = 1;
+        } else {
+          tipoQuestaoID = 1; // Um valor padrão, caso necessário
+        }
+        // Fazendo a requisição HTTP POST para cada questão
+        final response = await http.post(
+          Uri.parse('http://localhost:5092/questao/adicionar'),
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            "checkListId": idChecklist,
+            "titulo": tituloQuestao,
+            "tipo": tipoQuestaoID
+          }),
+        );
+
+        // Verificando o código de status da resposta
+        if (response.statusCode >= 200 && response.statusCode < 400) {
+          final data = jsonDecode(response.body);
+          var idQuestao = data['id'];
+          criaAlternativa(idQuestao, question.options);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Erro: $idQuestao')),
+          );
+        } else if (response.statusCode >= 400) {
+          // Caso de erro
+          final data = jsonDecode(response.body);
+          var e = data['message'] ?? 'Erro desconhecido';
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Erro questao: $e')),
+          );
+        }
+      }
+    } catch (e) {
+      // Tratamento de exceções de conexão ou de parsing JSON
+      print('Erro na requisição: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao se conectar com o servidor')),
+      );
+    }
   }
-}
- 
- 
+
+  Future<void> criaAlternativa(int idQuestao, List<String> options) async {
+    try {
+      for (var alternativa in options) {
+        print(alternativa);
+
+        // Enviando requisição HTTP POST para adicionar alternativa
+        final response = await http.post(
+          Uri.parse('http://localhost:5092/alternativa/adicionar'),
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            "questaoId": idQuestao,
+            "descricao": alternativa,
+          }),
+        );
+
+        // Verificando o código de status da resposta
+        if (response.statusCode >= 200 && response.statusCode < 400) {
+          final data = jsonDecode(response.body);
+          var idAlternativa = data['id'];
+          print('ID da Alternativa: $idAlternativa');
+        } else {
+          final data = jsonDecode(response.body);
+          var e = data['message'] ?? 'Erro desconhecido';
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Erro alternativa: $e')),
+          );
+        }
+      }
+    } catch (e) {
+      print('Erro na requisição: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao se conectar com o servidor')),
+      );
+    }
+  }
+
+  void ca() {
+    int index = 0;
+    for (var q in questions) {
+      index += 1;
+      print(q.options);
+      print(q.questionText);
+      print(q.questionType);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    
+
     return Scaffold(
-      body: Row( 
+      body: Row(
         children: [
           SideBar(token: widget.token),
           Expanded(
@@ -220,79 +214,97 @@ void ca(){
                     borderRadius: BorderRadius.circular(15),
                     color: Color.fromRGBO(117, 117, 117, 1),
                   ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Column(
-                            children: [
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Nome do Checklist",
-                                  style: TextStyle(color: Colors.white),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Nome do Checklist",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Container(
-                                  width: 400,
-                                  child: TextField(
-                                    controller: nomeCheckListController,
-                                    decoration: InputDecoration(
-                                      filled: true,
-                                      fillColor: Colors.white,
+                                SizedBox(height: 15),
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Container(
+                                    width: 200,
+                                    child: TextField(
+                                      controller: nomeCheckListController,
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
+                              ],
+                            ),
+                            if (screenSize.width <
+                                600) // Botão abaixo do input em telas menores
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20.0),
+                                child: ElevatedButton(
+                                  onPressed: Chequelist,
+                                  child: Text("Salvar Checklist"),
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.black,
+                                    backgroundColor:
+                                        const Color.fromRGBO(240, 231, 16, 1),
+                                  ),
+                                ),
                               ),
-                            ],
-                          ),
-                          SizedBox(
-                            width: 120,
-                          ),
-                          ElevatedButton(
-                            onPressed:Chequelist,
-                            child: Text("Salvar Checklist"),
-                            style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.black,
-                                backgroundColor:
-                                    const Color.fromRGBO(240, 231, 16, 1),
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.zero)),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: questions.length,
-                          itemBuilder: (context, index) {
-                            return QuestionCard(
-                              key: UniqueKey(),
-                              question: questions[index],
-                              onRemove: () => removeQuestion(index),
-                            );
-                          },
+                            if (screenSize.width >=
+                                600) // Botão ao lado do input em telas maiores
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 20.0),
+                                child: ElevatedButton(
+                                  onPressed: Chequelist,
+                                  child: Text("Salvar Checklist"),
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.black,
+                                    backgroundColor:
+                                        const Color.fromRGBO(240, 231, 16, 1),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      ElevatedButton(
+                        SizedBox(height: 15),
+                        Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true, // Ajuda a evitar o overflow
+                            physics:
+                                ClampingScrollPhysics(), // Permite que a lista role dentro do ScrollView
+                            itemCount: questions.length,
+                            itemBuilder: (context, index) {
+                              return QuestionCard(
+                                key: UniqueKey(),
+                                question: questions[index],
+                                onRemove: () => removeQuestion(index),
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(height: 15),
+                        ElevatedButton(
                           onPressed: addQuestion,
                           child: Text("Adicionar pergunta"),
                           style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.black,
-                              backgroundColor:
-                                  const Color.fromRGBO(240, 231, 16, 1))),
-                    ],
+                            foregroundColor: Colors.black,
+                            backgroundColor:
+                                const Color.fromRGBO(240, 231, 16, 1),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 )
               ],
@@ -388,8 +400,7 @@ class _QuestionCardState extends State<QuestionCard> {
                     children: [
                       Expanded(
                         child: TextField(
-                          controller:
-                              widget.question.optionsControllers[index],
+                          controller: widget.question.optionsControllers[index],
                           decoration: InputDecoration(
                             labelText: 'Opção ${index + 1}',
                           ),
