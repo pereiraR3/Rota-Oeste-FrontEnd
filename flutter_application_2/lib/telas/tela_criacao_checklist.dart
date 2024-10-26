@@ -16,10 +16,16 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
   List<Question> questions = [];
   final String BaseUrl = 'http://localhost:5092';
   final TextEditingController nomeCheckListController = TextEditingController();
+  
+  
+  
   void addQuestion() {
     setState(() {
       questions.add(Question());
     });
+    for (var q in questions){
+      print(q.questionText);
+    }
   }
 
   void removeQuestion(int index) {
@@ -300,15 +306,16 @@ void ca(){
 
 class Question {
   String questionText = '';
-  String questionType = 'Objetiva'; // Tipos: Objetiva, Múltipla Escolha, Imagem
   List<String> options = [''];
-
+  TextEditingController questionTextController = TextEditingController();
+  String questionType = 'Objetiva'; // Tipos: Objetiva, Múltipla Escolha, Imagem
+  List<TextEditingController> optionsControllers = [TextEditingController()];
   void addOption() {
-    options.add('');
+    optionsControllers.add(TextEditingController());
   }
 
   void removeOption(int index) {
-    options.removeAt(index);
+    optionsControllers.removeAt(index);
   }
 }
 
@@ -324,7 +331,6 @@ class QuestionCard extends StatefulWidget {
 }
 
 class _QuestionCardState extends State<QuestionCard> {
-  bool isExpanded = true; // Agora, o estado começa como expandido
   String? selectedType;
 
   @override
@@ -346,9 +352,7 @@ class _QuestionCardState extends State<QuestionCard> {
               children: [
                 Expanded(
                   child: TextField(
-                    onChanged: (value) {
-                      widget.question.questionText = value;
-                    },
+                    controller: widget.question.questionTextController,
                     decoration: InputDecoration(labelText: 'Pergunta'),
                   ),
                 ),
@@ -378,15 +382,14 @@ class _QuestionCardState extends State<QuestionCard> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: widget.question.options.length,
+                itemCount: widget.question.optionsControllers.length,
                 itemBuilder: (context, index) {
                   return Row(
                     children: [
                       Expanded(
                         child: TextField(
-                          onChanged: (value) {
-                            widget.question.options[index] = value;
-                          },
+                          controller:
+                              widget.question.optionsControllers[index],
                           decoration: InputDecoration(
                             labelText: 'Opção ${index + 1}',
                           ),
