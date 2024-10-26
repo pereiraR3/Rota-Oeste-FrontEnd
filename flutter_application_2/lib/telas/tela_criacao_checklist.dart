@@ -214,98 +214,99 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
                     borderRadius: BorderRadius.circular(15),
                     color: Color.fromRGBO(117, 117, 117, 1),
                   ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    "Nome do Checklist",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                SizedBox(height: 15),
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Container(
-                                    width: 200,
-                                    child: TextField(
-                                      controller: nomeCheckListController,
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            if (screenSize.width <
-                                600) // Botão abaixo do input em telas menores
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20.0),
-                                child: ElevatedButton(
-                                  onPressed: Chequelist,
-                                  child: Text("Salvar Checklist"),
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.black,
-                                    backgroundColor:
-                                        const Color.fromRGBO(240, 231, 16, 1),
-                                  ),
-                                ),
-                              ),
-                            if (screenSize.width >=
-                                600) // Botão ao lado do input em telas maiores
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 20.0),
-                                child: ElevatedButton(
-                                  onPressed: Chequelist,
-                                  child: Text("Salvar Checklist"),
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.black,
-                                    backgroundColor:
-                                        const Color.fromRGBO(240, 231, 16, 1),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                        SizedBox(height: 15),
-                        Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true, // Ajuda a evitar o overflow
-                            physics:
-                                ClampingScrollPhysics(), // Permite que a lista role dentro do ScrollView
-                            itemCount: questions.length,
-                            itemBuilder: (context, index) {
-                              return QuestionCard(
-                                key: UniqueKey(),
-                                question: questions[index],
-                                onRemove: () => removeQuestion(index),
-                              );
-                            },
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        ElevatedButton(
-                          onPressed: addQuestion,
-                          child: Text("Adicionar pergunta"),
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            backgroundColor:
-                                const Color.fromRGBO(240, 231, 16, 1),
-                          ),
-                        ),
-                      ],
+           child: SingleChildScrollView(
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Container(
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: Color.fromRGBO(117, 117, 117, 1),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Nome do Checklist",
+              style: TextStyle(color: Colors.white),
+            ),
+            SizedBox(height: 15),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Input do nome
+                Container(
+                  width: screenSize.width < 400 ? screenSize.width * 0.8 : 200,
+                  child: TextField(
+                    controller: nomeCheckListController,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
                     ),
                   ),
+                ),
+                // Botão ao lado do input em telas maiores
+                if (screenSize.width >= 500)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: ElevatedButton(
+                      onPressed: Chequelist,
+                      child: Text("Salvar Checklist",  overflow: TextOverflow.ellipsis),
+                      
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.black,
+                        backgroundColor: const Color.fromRGBO(240, 231, 16, 1),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            // Botão abaixo do input em telas menores
+            if (screenSize.width < 500)
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: ElevatedButton(
+                  onPressed: Chequelist,
+                  child: Text("Salvar Checklist"),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    backgroundColor: const Color.fromRGBO(240, 231, 16, 1),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+      SizedBox(height: 15),
+      ListView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: questions.length,
+        itemBuilder: (context, index) {
+          return QuestionCard(
+            key: UniqueKey(),
+            question: questions[index],
+            onRemove: () => removeQuestion(index),
+          );
+        },
+      ),
+      SizedBox(height: 15),
+      Center(
+        child: ElevatedButton(
+          onPressed: addQuestion,
+          child: Text("Adicionar pergunta"),
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.black,
+            backgroundColor: const Color.fromRGBO(240, 231, 16, 1),
+          ),
+        ),
+      ),
+    ],
+  ),
+),
+
+
                 )
               ],
             ),
