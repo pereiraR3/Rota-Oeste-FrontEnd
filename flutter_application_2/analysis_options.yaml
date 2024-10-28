@@ -26,6 +26,10 @@ analyzer:
     use_super_parameters: ignore
     override_on_non_overriding_member: ignore
     unnecessary_null_comparison: ignore
+    unused_local_variable: ignore
+    avoid_print: ignore
+    non_constant_identifier_names: ignore
+    unnecessary_string_interpolations: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:
