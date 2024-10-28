@@ -223,12 +223,12 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
                 SizedBox(height: 20),
                 Container(
                   padding: EdgeInsets.all(20),
-                  width: screenSize.width * 0.6, // 80% da largura da tela
+                  width: screenSize.width * 0.6, // 60% da largura da tela
                   height: screenSize.height * 0.8, // 80% da altura da tela
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Color.fromRGBO(117, 117, 117, 1),
-                  ),
+                      borderRadius: BorderRadius.circular(15),
+                      color: Color.fromRGBO(255, 255, 255, 1),
+                      border: Border.all(color: Colors.black, width: 2)),
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -237,14 +237,14 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
                           padding: EdgeInsets.all(20),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            color: Color.fromRGBO(117, 117, 117, 1),
+                            color: Color.fromRGBO(255, 255, 255, 1),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 "Nome do Checklist",
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(color: Colors.black),
                               ),
                               SizedBox(height: 15),
                               Row(
@@ -259,7 +259,8 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
                                       controller: nomeCheckListController,
                                       decoration: InputDecoration(
                                         filled: true,
-                                        fillColor: Colors.white,
+                                        fillColor: const Color.fromRGBO(
+                                            240, 231, 16, 80),
                                       ),
                                     ),
                                   ),
@@ -385,7 +386,15 @@ class _QuestionCardState extends State<QuestionCard> {
                 Expanded(
                   child: TextField(
                     controller: widget.question.questionTextController,
-                    decoration: InputDecoration(labelText: 'Pergunta'),
+                    decoration: InputDecoration(
+                        hintText: 'Pergunta',
+                        hintStyle: TextStyle(color: Colors.white),
+                        filled: true,
+                        fillColor: const Color.fromRGBO(117, 117, 117, 1),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        )),
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
                 SizedBox(width: 10),
@@ -427,7 +436,8 @@ class _QuestionCardState extends State<QuestionCard> {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.remove_circle),
+                        icon: Icon(Icons.delete),
+                        color: Colors.red,
                         onPressed: () {
                           setState(() {
                             widget.question.removeOption(index);
