@@ -15,6 +15,7 @@ class RelatorioScreen extends StatefulWidget {
 }
 
 class _RelatorioScreenState extends State<RelatorioScreen> {
+  final String UrlBase = 'http://localhost:5092';  
   List<dynamic> relatorios = [];
   List<dynamic> filteredRelatorios = [];
   int currentPage = 0;
@@ -31,7 +32,7 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
 Future<void> fechTodosCheckLists() async {
   try {
     final response = await http.get(
-      Uri.parse('https://run.mocky.io/v3/4c8f5a69-f846-4b9a-87a1-04c914de88d1'),
+      Uri.parse('${UrlBase}/checklist/buscarTodos'),
       headers: {
         'Authorization': 'Bearer ${widget.token}',
         'Content-Type': 'application/json',
@@ -49,9 +50,7 @@ if (data != null && data is List) {
       String titulo = item['nome'] ?? 'Título Desconhecido';
       
       // Conta a quantidade de questões presentes no checklist
-      int quantidade = item['questoes'] != null && item['questoes'] is List
-          ? (item['questoes'] as List).length
-          : 0;
+      int quantidade = item['quantityQuestoes'] ?? 0;
       
       // Obtém a data de criação
       String dataCriacao = item['dataCriacao'] ?? 'Data Desconhecida';
