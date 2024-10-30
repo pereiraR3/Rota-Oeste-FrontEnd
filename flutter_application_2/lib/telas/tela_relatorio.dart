@@ -152,6 +152,8 @@ Future<void> fetchRelatorio(int checklistId) async {
                       decoration: InputDecoration(
                         hintText: 'Procurar por relatório',
                         filled: true,
+                        contentPadding: EdgeInsets.symmetric(vertical: 15.0), // Alinhamento vertical
+
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
@@ -184,21 +186,21 @@ Future<void> fetchRelatorio(int checklistId) async {
                                 child: Center(
                                   child: Text('Nome do Relatório',
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
+                                          fontWeight: FontWeight.bold),textAlign: TextAlign.center, overflow: TextOverflow.ellipsis),
                                 ),
                               ),
                               Expanded(
                                 child: Center(
                                   child: Text('Quantidade de Questões',
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold),overflow: TextOverflow.ellipsis),
+                                          fontWeight: FontWeight.bold),textAlign: TextAlign.center,overflow: TextOverflow.ellipsis),
                                 ),
                               ),
                               Expanded(
                                 child: Center(
                                   child: Text('Data de Criação', 
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold),overflow: TextOverflow.ellipsis),
+                                          fontWeight: FontWeight.bold),textAlign: TextAlign.center,overflow: TextOverflow.ellipsis),
                                 ),
                               ),
                               Expanded(
