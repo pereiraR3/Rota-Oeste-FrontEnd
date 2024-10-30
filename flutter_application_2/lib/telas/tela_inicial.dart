@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_application_2/componentes/side_bar.dart'; // Mudou o nome do componente para SideMenu
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
+
 // allChecklist: https://run.mocky.io/v3/3e078084-e58e-485e-96b0-98d8fdc5ac62
 // all clientes: https://run.mocky.io/v3/45040cea-f375-4fb4-b82b-fd16e7a65fdf
 class ClientChecklistScreen extends StatefulWidget {
@@ -31,7 +33,17 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
   print('Token carregado para requisição: $token');
 }
 
-
+String formatarData(String? dataCriacao) {
+  if (dataCriacao == null) return 'Data Desconhecida';
+  
+  try {
+    final data = DateTime.parse(dataCriacao);
+    final formatador = DateFormat('dd/MM/yyyy');
+    return formatador.format(data);
+  } catch (e) {
+    return 'Data Inválida';
+  }
+}
   Future<List<dynamic>> fetchClientes() async {
     
     // Simulando a busca de clientes
@@ -334,7 +346,7 @@ const SizedBox(height: 5),
           Icon(Icons.date_range), // Ícone para data
           const SizedBox(width: 5),
           Flexible(child: 
-          Text(checklist['dataCriacao'] ?? 'Data não disponível', overflow: TextOverflow.ellipsis),
+          Text(formatarData(checklist['dataCriacao']), overflow: TextOverflow.ellipsis),
           )
         ],
       ),
