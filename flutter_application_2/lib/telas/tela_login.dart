@@ -14,7 +14,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
+  final String UrlBase = 'http://localhost:5092';
   @override
   void dispose() {
     usernameController.dispose();
@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final response = await http.post(
         Uri.parse(
-            'https://run.mocky.io/v3/6ec762ec-18b4-499e-ae8d-68ed2fc24496'),
+            '${UrlBase}/auth/login'),
         headers: {
           'Content-Type': 'application/json',
         },

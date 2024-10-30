@@ -323,7 +323,7 @@ const SizedBox(height: 5),
           Icon(Icons.numbers), // Ícone para checklist
           const SizedBox(width: 5),
           Flexible(child: 
-          Text("${checklist['questoes'].length} questões", overflow: TextOverflow.ellipsis),
+          Text("${checklist['quantityQuestoes']} questões", overflow: TextOverflow.ellipsis),
           )
         ],
       ),
