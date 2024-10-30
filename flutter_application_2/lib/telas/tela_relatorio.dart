@@ -3,6 +3,7 @@ import 'package:flutter_application_2/componentes/side_bar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 //interacao ---  https://run.mocky.io/v3/f8ec33c1-7416-436e-be16-16ff924e5656
 
@@ -27,7 +28,17 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
     super.initState();
     fechTodosCheckLists(); // Carrega as interações após a inicialização
   }
-
+String formatarData(String? dataCriacao) {
+  if (dataCriacao == null) return 'Data Desconhecida';
+  
+  try {
+    final data = DateTime.parse(dataCriacao);
+    final formatador = DateFormat('dd/MM/yyyy');
+    return formatador.format(data);
+  } catch (e) {
+    return 'Data Inválida';
+  }
+}
   // Função para buscar todas as interações
 Future<void> fechTodosCheckLists() async {
   try {
@@ -53,7 +64,7 @@ if (data != null && data is List) {
       int quantidade = item['quantityQuestoes'] ?? 0;
       
       // Obtém a data de criação
-      String dataCriacao = item['dataCriacao'] ?? 'Data Desconhecida';
+      String dataCriacao = formatarData(item['dataCriacao']);
 
       return {
         'titulo': titulo,
