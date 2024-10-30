@@ -21,9 +21,7 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
     setState(() {
       questions.add(Question());
     });
-    for (var q in questions) {
-      print(q.questionText);
-    }
+ 
   }
 
   void removeQuestion(int index) {
@@ -66,8 +64,15 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
       if (response.statusCode >= 200 && response.statusCode < 400) {
         final data = jsonDecode(response.body);
         var idCheckList = data['id'];
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Sucesso ao criar checklist',
+                  style: TextStyle(color: Colors.black)),
+              backgroundColor: Color.fromRGBO(44, 211, 11, 0.682)),
+        );
         criaQuestao(idCheckList);
-        print('ID do Checklist: $idCheckList');
+        
+          
       } else if (response.statusCode >= 400) {
         // Caso de erro
         final data = jsonDecode(response.body);
@@ -76,7 +81,7 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
           SnackBar(
               content: Text('Erro checklista: $e',
                   style: TextStyle(color: Colors.black)),
-              backgroundColor: Color.fromRGBO(240, 231, 16, 80)),
+              backgroundColor: Color.fromRGBO(211, 11, 11, 0.686)),
         );
       }
     } catch (e) {
@@ -126,16 +131,16 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
           criaAlternativa(idQuestao, question.options);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text('Erro: $idQuestao',
+                content: Text('Sucesso ao criar questão: $idQuestao',
                     style: TextStyle(color: Colors.black)),
-                backgroundColor: Color.fromRGBO(240, 231, 16, 80)),
+                backgroundColor: Color.fromRGBO(16, 240, 16, 0.69)),
           );
         } else if (response.statusCode >= 400) {
           // Caso de erro
           final data = jsonDecode(response.body);
           var e = data['message'] ?? 'Erro desconhecido';
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Erro questao: $e')),
+            SnackBar(content: Text('Erro questao: $e'), backgroundColor: Color.fromRGBO(240, 50, 16, 0.686)),
           );
         }
       }
@@ -173,12 +178,17 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
         if (response.statusCode >= 200 && response.statusCode < 400) {
           final data = jsonDecode(response.body);
           var idAlternativa = data['id'];
-          print('ID da Alternativa: $idAlternativa');
+           ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Alternativa criada com sucesso',
+                style: TextStyle(color: Colors.black)),
+            backgroundColor: Color.fromRGBO(61, 240, 16, 0.69)),
+      );
         } else {
           final data = jsonDecode(response.body);
           var e = data['message'] ?? 'Erro desconhecido';
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Erro alternativa: $e')),
+            SnackBar(content: Text('Erro alternativa: $e'), backgroundColor: Color.fromRGBO(240, 61, 16, 0.686)),
           );
         }
       }
@@ -250,19 +260,21 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   // Input do nome
-                                  Container(
-                                    width: screenSize.width < 400
-                                        ? screenSize.width * 0.8
-                                        : 200,
-                                    child: TextField(
-                                      controller: nomeCheckListController,
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: const Color.fromRGBO(
-                                            240, 231, 16, 80),
-                                      ),
-                                    ),
-                                  ),
+                                  Flexible(
+  child: Container(
+    constraints: BoxConstraints(
+      maxWidth: screenSize.width < 400 ? screenSize.width * 0.8 : 200,
+    ),
+    child: TextField(
+      controller: nomeCheckListController,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: const Color.fromRGBO(240, 231, 16, 0.8), // Ajuste na opacidade de 80% para 0.8
+      ),
+    ),
+  ),
+),
+
                                   // Botão ao lado do input em telas maiores
                                   if (screenSize.width >= 500)
                                     Padding(
@@ -287,7 +299,7 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
                                   padding: const EdgeInsets.only(top: 20.0),
                                   child: ElevatedButton(
                                     onPressed: Chequelist,
-                                    child: Text("Salvar Checklist"),
+                                    child: Text("Salvar Checklist", overflow: TextOverflow.ellipsis),
                                     style: ElevatedButton.styleFrom(
                                       foregroundColor: Colors.black,
                                       backgroundColor:
@@ -350,7 +362,6 @@ class Question {
     optionsControllers.removeAt(index);
   }
 }
-
 class QuestionCard extends StatefulWidget {
   final Question question;
   final VoidCallback onRemove;
@@ -375,108 +386,120 @@ class _QuestionCardState extends State<QuestionCard> {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+      child: ExpansionTile(
+        title: Text(
+          widget.question.questionText.isEmpty ? 'Pergunta' : widget.question.questionText,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: TextField(
-                    controller: widget.question.questionTextController,
-                    decoration: InputDecoration(
-                        hintText: 'Pergunta',
-                        hintStyle: TextStyle(color: Colors.white),
-                        filled: true,
-                        fillColor: const Color.fromRGBO(117, 117, 117, 1),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        )),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                SizedBox(width: 10),
-                DropdownButton<String>(
-                  value: selectedType,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedType = newValue;
-                      widget.question.questionType = newValue!;
-                    });
-                  },
-                  items: <String>['Objetiva', 'Múltipla Escolha', 'Imagem']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            if (selectedType == 'Objetiva' ||
-                selectedType == 'Múltipla Escolha') ...[
-              Text('Alternativas:'),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: widget.question.optionsControllers.length,
-                itemBuilder: (context, index) {
-                  return Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: widget.question.optionsControllers[index],
-                          decoration: InputDecoration(
-                            labelText: 'Opção ${index + 1}',
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: widget.question.questionTextController,
+                        decoration: InputDecoration(
+                          hintText: 'Pergunta',
+                          filled: true,
+                          fillColor: const Color.fromRGBO(117, 117, 117, 1),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
                           ),
                         ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete),
-                        color: Colors.red,
-                        onPressed: () {
+                        style: TextStyle(color: Colors.white),
+                        onChanged: (value) {
                           setState(() {
-                            widget.question.removeOption(index);
+                            widget.question.questionText = value;
                           });
                         },
                       ),
-                    ],
-                  );
-                },
-              ),
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    widget.question.addOption();
-                  });
-                },
-                child: Text('Adicionar alternativa'),
-              ),
-            ] else if (selectedType == 'Imagem') ...[
-              Text('Resposta aceita no formato de:'),
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  // Lógica para upload de imagem
-                },
-                child: Text('Resposta do tipo imagem'),
-              ),
-            ],
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: widget.onRemove,
-                child: Text('Remover Pergunta'),
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.red,
+                    ),
+                    SizedBox(width: 10),
+                    DropdownButton<String>(
+                      value: selectedType,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedType = newValue;
+                          widget.question.questionType = newValue!;
+                        });
+                      },
+                      items: <String>['Objetiva', 'Múltipla Escolha', 'Imagem']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ],
                 ),
-              ),
+                SizedBox(height: 16),
+                if (selectedType == 'Objetiva' || selectedType == 'Múltipla Escolha') ...[
+                  Text('Alternativas:'),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: widget.question.optionsControllers.length,
+                    itemBuilder: (context, index) {
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: widget.question.optionsControllers[index],
+                              decoration: InputDecoration(
+                                labelText: 'Opção ${index + 1}',
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            color: Colors.red,
+                            onPressed: () {
+                              setState(() {
+                                widget.question.removeOption(index);
+                              });
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        widget.question.addOption();
+                      });
+                    },
+                    child: Text('Adicionar alternativa'),
+                  ),
+                ] else if (selectedType == 'Imagem') ...[
+                  Text('Resposta aceita no formato de:'),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Lógica para upload de imagem
+                    },
+                    child: Text('Resposta do tipo imagem'),
+                  ),
+                ],
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: widget.onRemove,
+                    child: Text('Remover Pergunta'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.red,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
