@@ -227,13 +227,13 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
               children: [
                 Text(
                   "Criação de checklists",
-                  style: TextStyle(fontSize: 40),
+                  style: TextStyle(fontSize: 24),
                 ),
                 SizedBox(height: 20),
                 Container(
                   padding: EdgeInsets.all(20),
                   width: screenSize.width * 0.6, // 60% da largura da tela
-                  height: screenSize.height * 0.8, // 80% da altura da tela
+                  height: screenSize.height * 0.75, // 80% da altura da tela
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: Color.fromRGBO(255, 255, 255, 1),
@@ -261,19 +261,19 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
                                 children: [
                                   // Input do nome
                                   Flexible(
-  child: Container(
-    constraints: BoxConstraints(
-      maxWidth: screenSize.width < 400 ? screenSize.width * 0.8 : 200,
-    ),
-    child: TextField(
-      controller: nomeCheckListController,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: const Color.fromRGBO(240, 231, 16, 0.8), // Ajuste na opacidade de 80% para 0.8
-      ),
-    ),
-  ),
-),
+                                        child: Container(
+                                          constraints: BoxConstraints(
+                                            maxWidth: screenSize.width < 400 ? screenSize.width * 0.8 : 200,
+                                          ),
+                                          child: TextField(
+                                            controller: nomeCheckListController,
+                                            decoration: InputDecoration(
+                                              filled: true,
+                                              fillColor: const Color.fromRGBO(240, 231, 16, 0.8), // Ajuste na opacidade de 80% para 0.8
+                                            ),
+                                          ),
+                                        ),
+                                      ),
 
                                   // Botão ao lado do input em telas maiores
                                   if (screenSize.width >= 500)
@@ -385,40 +385,40 @@ class _QuestionCardState extends State<QuestionCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      child: ExpansionTile(
-        title: Text(
-          widget.question.questionText.isEmpty ? 'Pergunta' : widget.question.questionText,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+    margin: const EdgeInsets.only(bottom: 16),
+    child: ExpansionTile(
+      title: Text(
+        widget.question.questionText.isEmpty ? 'Pergunta' : widget.question.questionText,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView( // Adiciona rolagem para evitar overflow
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: TextField(
-                        controller: widget.question.questionTextController,
-                        decoration: InputDecoration(
-                          hintText: 'Pergunta',
-                          filled: true,
-                          fillColor: const Color.fromRGBO(117, 117, 117, 1),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
+                    TextField(
+                      controller: widget.question.questionTextController,
+                      decoration: InputDecoration(
+                        hintText: 'Pergunta',
+                        filled: true,
+                        fillColor: const Color.fromRGBO(117, 117, 117, 1),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
                         ),
-                        style: TextStyle(color: Colors.white),
-                        onChanged: (value) {
-                          setState(() {
-                            widget.question.questionText = value;
-                          });
-                        },
                       ),
+                      style: TextStyle(color: Colors.white),
+                      onChanged: (value) {
+                        setState(() {
+                          widget.question.questionText = value;
+                        });
+                      },
                     ),
-                    SizedBox(width: 10),
+                    SizedBox(height: 10),
                     DropdownButton<String>(
                       value: selectedType,
                       onChanged: (String? newValue) {
@@ -499,8 +499,9 @@ class _QuestionCardState extends State<QuestionCard> {
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 }
