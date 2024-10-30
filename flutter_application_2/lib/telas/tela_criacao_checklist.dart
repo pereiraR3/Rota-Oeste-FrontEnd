@@ -81,10 +81,9 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
       }
     } catch (e) {
       // Tratamento de exceções de conexão ou de parsing JSON
-      print('Erro na requisição: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text('Não foi possivel carregar checklist',
+            content: Text('Não foi possivel carregar checklist $e',
                 style: TextStyle(color: Colors.black)),
             backgroundColor: Color.fromRGBO(240, 231, 16, 80)),
       );

@@ -65,11 +65,12 @@ if (data != null && data is List) {
       
       // Obtém a data de criação
       String dataCriacao = formatarData(item['dataCriacao']);
-
+      int idcheck = item['id'];
       return {
         'titulo': titulo,
         'quantidade': quantidade,
         'dataCriacao': dataCriacao,
+        'id': idcheck
       };
     }).toList();
     filteredRelatorios = List.from(relatorios); // Inicializa a lista filtrada
@@ -86,7 +87,30 @@ if (data != null && data is List) {
     throw Exception('Erro ao carregar interações');
   }
 }
-
+Future<void> fetchRelatorio(int checklistId) async {
+  try {
+    final response = await http.get(
+      Uri.parse('${UrlBase}/checklist/relatorio-geral/${checklistId}'),
+      headers: {
+        'Authorization': 'Bearer ${widget.token}',
+        'Content-Type': 'application/json',
+      },
+    );
+    if (response.statusCode == 200){
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('PDF sendo gerado...',
+                style: TextStyle(color: Colors.black)),
+            backgroundColor: Color.fromRGBO(24, 240, 16, 0.69)),
+      );
+    }
+ 
+  } catch (e) {
+    print("Erro: $e");
+    throw Exception('Erro ao carregar interações');
+    
+  }
+}
   // Função para filtrar relatórios/interações
   void filterRelatorios(String query) {
     setState(() {
@@ -160,21 +184,21 @@ if (data != null && data is List) {
                                 child: Center(
                                   child: Text('Nome do Relatório',
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
+                                          fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
                                 ),
                               ),
                               Expanded(
                                 child: Center(
                                   child: Text('Quantidade de Questões',
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
+                                          fontWeight: FontWeight.bold),overflow: TextOverflow.ellipsis),
                                 ),
                               ),
                               Expanded(
                                 child: Center(
-                                  child: Text('Data de Criação',
+                                  child: Text('Data de Criação', 
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
+                                          fontWeight: FontWeight.bold),overflow: TextOverflow.ellipsis),
                                 ),
                               ),
                               Expanded(
@@ -209,14 +233,14 @@ if (data != null && data is List) {
                                         child: Center(
                                           child: Text(
                                             filteredRelatorios[actualIndex]
-                                                ['titulo'],
+                                                ['titulo'],overflow: TextOverflow.ellipsis
                                           ),
                                         ),
                                       ),
                                       Expanded(
                                         child: Center(
                                           child: Text(
-                                            '${filteredRelatorios[actualIndex]['quantidade'].toString()} Questões',
+                                            '${filteredRelatorios[actualIndex]['quantidade'].toString()} Questões',overflow: TextOverflow.ellipsis
                                           ),
                                         ),
                                       ),
@@ -224,32 +248,21 @@ if (data != null && data is List) {
                                         child: Center(
                                           child: Text(
                                             filteredRelatorios[actualIndex]
-                                                ['dataCriacao'],
+                                                ['dataCriacao'],overflow: TextOverflow.ellipsis
                                           ),
                                         ),
                                       ),
                                       Expanded(
-                                        child: Center(
-                                          child: ElevatedButton.icon(
-                                            onPressed: () {
-                                              // Ação para abrir o relatório
-                                            },
-                                             icon: Icon(Icons.picture_as_pdf),
-                                             label: Text('Gerar'),
-                                            style: ElevatedButton.styleFrom(
+  child: Center(
+    child: IconButton(
+      icon: Icon(Icons.picture_as_pdf),
+      color: Colors.black,
+      
+      onPressed: () => fetchRelatorio(filteredRelatorios[actualIndex]['id']),
+    ),
+  ),
+),
 
-                                                foregroundColor: Colors.black,
-                                                backgroundColor:
-                                                    const Color.fromRGBO(
-                                                        240, 231, 16, 1),
-                                                shape:
-                                                    const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.zero)),
-                                            
-                                          ),
-                                        ),
-                                      ),
                                     ],
                                   ),
                                 ],
@@ -277,10 +290,18 @@ if (data != null && data is List) {
                                   backgroundColor:
                                       const Color.fromRGBO(240, 231, 16, 1),
                                 ),
-                                child: Text('Anterior'),
+                                child: SizedBox(
+                                  width: 50,
+
+                                child: Text(
+      'Anterior',
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
+    ),
+                                )
                               ),
                               Text(
-                                  'Página ${currentPage + 1} de ${((filteredRelatorios.length - 1) / itemsPerPage).ceil()}'),
+                                  'Pág ${currentPage + 1} de ${((filteredRelatorios.length - 1) / itemsPerPage).ceil()}'),
                               ElevatedButton(
                                 onPressed: (currentPage + 1) * itemsPerPage <
                                         filteredRelatorios.length
@@ -295,7 +316,15 @@ if (data != null && data is List) {
                                   backgroundColor:
                                       const Color.fromRGBO(240, 231, 16, 1),
                                 ),
-                                child: Text('Próxima'),
+                                
+                                child: SizedBox(
+                                  width: 50,
+                              child: Text(
+      'Próxima',
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
+    ),
+                                )
                               ),
                             ],
                           ),
