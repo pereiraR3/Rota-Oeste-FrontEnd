@@ -406,12 +406,12 @@ class _QuestionCardState extends State<QuestionCard> {
                       decoration: InputDecoration(
                         hintText: 'Pergunta',
                         filled: true,
-                        fillColor: const Color.fromRGBO(117, 117, 117, 1),
+                        fillColor: const Color.fromARGB(255, 233, 233, 233),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: const Color.fromARGB(255, 34, 32, 32)),
                       onChanged: (value) {
                         setState(() {
                           widget.question.questionText = value;

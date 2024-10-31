@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart'; // Adicionar dependência
 import '../telas/tela_inicial.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Importa flutter_svg para usar SVGs
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -118,7 +119,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   padding: EdgeInsets.all(20),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       ImgLogo(),
@@ -149,12 +151,10 @@ class ImgLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Image.asset(
-        "img/login.jpg",
-        width: 500,
-        height: 600,
-        fit: BoxFit.cover,
-      ),
+      child: Image.asset('img/login.jpg'),
+      width: 500,
+      height: 500,
+      
     );
   }
 }
@@ -162,6 +162,7 @@ class ImgLogin extends StatelessWidget {
 class ImgLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return Padding(
       padding: EdgeInsets.fromLTRB(1, 0, 1, 0),
       child: SizedBox(
@@ -298,11 +299,12 @@ class BotaoLogin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+  return Padding(
+    padding: const EdgeInsets.all(10.0), // Define uma margem ao redor do botão
+    child: ElevatedButton(
       onPressed: () => loginFunction(),
       style: ButtonStyle(
-        backgroundColor:
-            MaterialStateProperty.all(Color.fromRGBO(240, 231, 16, 1)),
+        backgroundColor: MaterialStateProperty.all(Color.fromRGBO(240, 231, 16, 1)),
         foregroundColor: MaterialStateProperty.all(Colors.black),
         fixedSize: MaterialStateProperty.all(Size(140, 50)),
         shape: MaterialStateProperty.all(
@@ -312,6 +314,8 @@ class BotaoLogin extends StatelessWidget {
         ),
       ),
       child: Text("Entrar"),
-    );
-  }
+    ),
+  );
+}
+
 }

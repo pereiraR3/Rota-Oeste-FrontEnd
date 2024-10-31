@@ -89,6 +89,7 @@ if (data != null && data is List) {
 }
 Future<void> fetchRelatorio(int checklistId) async {
   try {
+    print(checklistId);
     final response = await http.get(
       Uri.parse('${UrlBase}/checklist/relatorio-geral/${checklistId}'),
       headers: {
@@ -103,10 +104,22 @@ Future<void> fetchRelatorio(int checklistId) async {
                 style: TextStyle(color: Colors.black)),
             backgroundColor: Color.fromRGBO(24, 240, 16, 0.69)),
       );
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Não a dados no checklist ou nao foram respondidos',
+                style: TextStyle(color: Colors.black)),
+            backgroundColor: Color.fromRGBO(240, 106, 16, 0.686)),
+      );
     }
  
   } catch (e) {
-    print("Erro: $e");
+     ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('$e',
+                style: TextStyle(color: Colors.black)),
+            backgroundColor: Color.fromRGBO(240, 106, 16, 0.686)),
+      );
     throw Exception('Erro ao carregar interações');
     
   }
@@ -259,7 +272,7 @@ Future<void> fetchRelatorio(int checklistId) async {
     child: IconButton(
       icon: Icon(Icons.picture_as_pdf),
       color: Colors.black,
-      
+    
       onPressed: () => fetchRelatorio(filteredRelatorios[actualIndex]['id']),
     ),
   ),
