@@ -17,6 +17,7 @@ class ClientChecklistScreen extends StatefulWidget {
 
 class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
   String? token;
+  final String UrlBase = 'http://localhost:5092';
 
   @override
   void initState() {
@@ -48,7 +49,7 @@ String formatarData(String? dataCriacao) {
     
     // Simulando a busca de clientes
     final response = await http.get(
-      Uri.parse('http://localhost:5092/cliente/buscarTodos'),
+      Uri.parse('${UrlBase}/cliente/buscarTodos'),
       headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -65,7 +66,7 @@ String formatarData(String? dataCriacao) {
   Future<List<dynamic>> fetchChecklists() async {
     // Simulando a busca de checklists
     final response = await http.get(
-      Uri.parse('http://localhost:5092/checklist/buscarTodos'),
+      Uri.parse('${UrlBase}/checklist/buscarTodos'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -83,7 +84,7 @@ String formatarData(String? dataCriacao) {
   Future<List<dynamic>> fetchInteracao() async {
     // Simulando a busca de checklists
     final response = await http.get(
-      Uri.parse('http://localhost:5092/interacao/buscarTodos'),
+      Uri.parse('${UrlBase}/interacao/buscarTodos'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
