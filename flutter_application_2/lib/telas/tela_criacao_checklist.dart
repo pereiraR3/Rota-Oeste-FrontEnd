@@ -386,11 +386,23 @@ class _QuestionCardState extends State<QuestionCard> {
   Widget build(BuildContext context) {
     return Card(
     margin: const EdgeInsets.only(bottom: 16),
+     child: Theme(
+      data: Theme.of(context).copyWith(
+        dividerColor: Colors.transparent,
+        expansionTileTheme: ExpansionTileThemeData(
+          backgroundColor: const Color.fromARGB(255, 200, 200, 200), // Fundo da área da seta
+        ),
+      ),
     child: ExpansionTile(
       title: Text(
         widget.question.questionText.isEmpty ? 'Pergunta' : widget.question.questionText,
-        style: TextStyle(fontWeight: FontWeight.bold),
-        selectionColor:  const Color.fromARGB(255, 84, 219, 6)
+        style: TextStyle(fontWeight: FontWeight.bold, color: const Color.fromARGB(255, 27, 29, 26)),
+
+      ),
+      trailing: Icon(
+        Icons.arrow_drop_down, // Ícone customizado para seta
+        color: const Color.fromARGB(255, 216, 231, 3), // Cor da seta
+        
       ),
       children: [
         Padding(
@@ -404,6 +416,7 @@ class _QuestionCardState extends State<QuestionCard> {
                   children: [
                     TextField(
                       controller: widget.question.questionTextController,
+                    
                       decoration: InputDecoration(
                         hintText: 'Pergunta',
                         filled: true,
@@ -509,6 +522,8 @@ class _QuestionCardState extends State<QuestionCard> {
         ),
       ],
     ),
+  ),
   );
+  
 }
 }
