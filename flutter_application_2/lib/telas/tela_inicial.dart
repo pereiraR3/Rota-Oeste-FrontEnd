@@ -18,23 +18,25 @@ class ClientChecklistScreen extends StatefulWidget {
 class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
   String? token;
   final String UrlBase = 'http://localhost:5092';
-
+ int _currentPageChecklists = 0;
+  int _currentPageClientes = 0;
+  final int _itemsPerPage = 5;
+  
   @override
   void initState() {
     super.initState();
     _loadToken();
   }
 
-  Future<void> _loadToken() async {
-  final prefs = await SharedPreferences.getInstance();
-  setState(() {
-    token = prefs.getString('token');
-    
-  });
-  print('Token carregado para requisição: $token');
-}
-
-String formatarData(String? dataCriacao) {
+ Future<void> _loadToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      token = prefs.getString('token');
+    });
+    print('Token carregado para requisição: $token');
+  }
+ 
+  String formatarData(String? dataCriacao) {
   if (dataCriacao == null) return 'Data Desconhecida';
   
   try {
@@ -45,6 +47,7 @@ String formatarData(String? dataCriacao) {
     return 'Data Inválida';
   }
 }
+
   Future<List<dynamic>> fetchClientes() async {
     
     // Simulando a busca de clientes
@@ -79,8 +82,7 @@ String formatarData(String? dataCriacao) {
       throw Exception('Erro ao carregar checklists');
     }
   }
-
-
+  
   Future<List<dynamic>> fetchInteracao() async {
     // Simulando a busca de checklists
     final response = await http.get(
@@ -128,12 +130,12 @@ String formatarData(String? dataCriacao) {
   }).toList();
 }
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Row(
         children: [
-          SideBar(token: widget.token), // Mudou o nome do widget para SideMenu
+          SideBar(token: widget.token),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -145,43 +147,41 @@ String formatarData(String? dataCriacao) {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   Container(
-  color: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo suave
-  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
-  child: Row(
-    children: [
-      Expanded(
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            "Cliente",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
-        ),
-      ),
-      Expanded(
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            "Telefone",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
-        ),
-      ),
-      Expanded(
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            "Checklist",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
-        ),
-      ),
-    ],
-  ),
-),
-const SizedBox(height: 5),
-
-                  const SizedBox(height: 10),
+                    color: Color.fromRGBO(240, 231, 16, 1),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Cliente",
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Telefone",
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Checklist",
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 5),
                   Expanded(
                     child: FutureBuilder<List<dynamic>>(
                       future: fetchClientesFiltrados(),
@@ -193,57 +193,118 @@ const SizedBox(height: 5),
                         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                           return const Center(child: Text("Nenhum cliente encontrado"));
                         } else {
-                          return ListView.builder(
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) {
-                              var cliente = snapshot.data![index];
-                              return Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
+                          final totalItems = snapshot.data!.length;
+                          final totalPages = (totalItems / _itemsPerPage).ceil();
+                          final itemsToShow = snapshot.data!.skip(_currentPageClientes * _itemsPerPage).take(_itemsPerPage).toList();
+
+                          return Column(
+                            children: [
+                              Expanded(
+                                child: LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    return SingleChildScrollView(
+                                      scrollDirection: constraints.maxWidth < 600 ? Axis.horizontal : Axis.vertical,
+                                      child: SizedBox(
+                                        width: constraints.maxWidth < 600 ? 800 : constraints.maxWidth,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          physics: NeverScrollableScrollPhysics(),
+                                          itemCount: itemsToShow.length,
+                                          itemBuilder: (context, index) {
+                                            var cliente = itemsToShow[index];
+                                            return Card(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(15),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(Icons.person),
+                                                        const SizedBox(width: 5),
+                                                        Flexible(
+                                                          child: Text(
+                                                            cliente['nome'] ?? 'Nome não disponível',
+                                                            overflow: TextOverflow.ellipsis,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(Icons.phone),
+                                                        const SizedBox(width: 5),
+                                                        Flexible(
+                                                          child: Text(
+                                                            cliente['telefone'] ?? 'Telefone não disponível',
+                                                            overflow: TextOverflow.ellipsis,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(Icons.checklist),
+                                                        const SizedBox(width: 5),
+                                                        Flexible(
+                                                          child: Text(
+                                                            cliente['checklist'] ?? 'Checklist não disponível',
+                                                            overflow: TextOverflow.ellipsis,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
-                                child: Row(
-  children: [
-    Expanded(
-      child: Row(
-        children: [
-          Icon(Icons.person), // Ícone para nome
-          const SizedBox(width: 5),
-          Flexible(
-             child:  Text(cliente['nome'] ?? 'Nome não disponível', overflow: TextOverflow.ellipsis),
-            
-          )
-          
-        ],
-      ),
-    ),
-    Expanded(
-      child: Row(
-        children: [
-          Icon(Icons.phone), // Ícone para checklist
-          const SizedBox(width: 5),
-          Flexible(child: 
-          Text(cliente['telefone'].length.toString() ?? 'Telefone não disponível', overflow: TextOverflow.ellipsis),
-          )
-        ],
-      ),
-    ),
-    Expanded(
-      child: Row(
-        children: [
-          Icon(Icons.checklist), // Ícone para data
-          const SizedBox(width: 5),
-          Flexible(child: 
-          
-          Text(cliente['checklist'] ?? 'checklist não disponível',overflow: TextOverflow.ellipsis),
-          )
-        ],
-      ),
-    ),
-  ],
-),
-                                
-                              );
-                            },
+                              ),
+                                 Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo
+                                    ),
+                                    onPressed: _currentPageChecklists > 0
+                                        ? () {
+                                            setState(() {
+                                              _currentPageChecklists--;
+                                            });
+                                          }
+                                        : null,
+                                    child: Text('Anterior', overflow: TextOverflow.ellipsis,),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text('Página ${_currentPageChecklists + 1} de $totalPages'),
+                                  const SizedBox(width: 10),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo
+                                    ),
+                                    onPressed: _currentPageChecklists < totalPages - 1
+                                        ? () {
+                                            setState(() {
+                                              _currentPageChecklists++;
+                                            });
+                                          }
+                                        : null,
+                                    child: Text('Próxima', overflow: TextOverflow.ellipsis,),
+                                  ),
+                                ],
+                              ),
+                            ],
                           );
                         }
                       },
@@ -254,49 +315,42 @@ const SizedBox(height: 5),
                     'Checklists mais recentes',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-
-Container(
-  color: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo suave
-  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
-  child: Row(
-    children: [
-      Expanded(
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            "Nome",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
-        ),
-      ),
-      Expanded(
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            "Número de Questões",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
-        ),
-      ),
-      Expanded(
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            "Data de Criação",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
-        ),
-      ),
-    ],
-  ),
-),
-const SizedBox(height: 5),
-
-
-
-
-
-                  
+                  Container(
+                    color: Color.fromRGBO(240, 231, 16, 1),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Nome",
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Número de Questões",
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Data de Criação",
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 5),
                   Expanded(
                     child: FutureBuilder<List<dynamic>>(
                       future: fetchChecklists(),
@@ -308,54 +362,118 @@ const SizedBox(height: 5),
                         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                           return const Center(child: Text("Nenhum checklist encontrado"));
                         } else {
-                          return ListView.builder(
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) {
-                              var checklist = snapshot.data![index];
-                              return Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                          final totalItems = snapshot.data!.length;
+                          final totalPages = (totalItems / _itemsPerPage).ceil();
+                          final itemsToShow = snapshot.data!.skip(_currentPageChecklists * _itemsPerPage).take(_itemsPerPage).toList();
+
+                          return Column(
+                            children: [
+                              Expanded(
+                                child: LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    return SingleChildScrollView(
+                                      scrollDirection: constraints.maxWidth < 600 ? Axis.horizontal : Axis.vertical,
+                                      child: SizedBox(
+                                        width: constraints.maxWidth < 600 ? 800 : constraints.maxWidth,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          physics: NeverScrollableScrollPhysics(),
+                                          itemCount: itemsToShow.length,
+                                          itemBuilder: (context, index) {
+                                            var checklist = itemsToShow[index];
+                                            return Card(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(Icons.checklist),
+                                                        const SizedBox(width: 5),
+                                                        Flexible(
+                                                          child: Text(
+                                                            checklist['nome'] ?? 'Nome não disponível',
+                                                            overflow: TextOverflow.ellipsis,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(Icons.numbers),
+                                                        const SizedBox(width: 5),
+                                                        Flexible(
+                                                          child: Text(
+                                                            "${checklist['quantityQuestoes']} questões",
+                                                            overflow: TextOverflow.ellipsis,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(Icons.date_range),
+                                                        const SizedBox(width: 5),
+                                                        Flexible(
+                                                          child: Text(
+                                                            formatarData(checklist['dataCriacao']),
+                                                            overflow: TextOverflow.ellipsis,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
-                               child: Row(
-  children: [
-    Expanded(
-      child: Row(
-        children: [
-          Icon(Icons.checklist), // Ícone para nome
-          const SizedBox(width: 5),
-          Flexible(child: 
-          
-          Text(checklist['nome'] ?? 'Nome não disponível', overflow: TextOverflow.ellipsis),
-          )
-        ],
-      ),
-    ),
-    Expanded(
-      child: Row(
-        children: [
-          Icon(Icons.numbers), // Ícone para checklist
-          const SizedBox(width: 5),
-          Flexible(child: 
-          Text("${checklist['quantityQuestoes']} questões", overflow: TextOverflow.ellipsis),
-          )
-        ],
-      ),
-    ),
-    Expanded(
-      child: Row(
-        children: [
-          Icon(Icons.date_range), // Ícone para data
-          const SizedBox(width: 5),
-          Flexible(child: 
-          Text(formatarData(checklist['dataCriacao']), overflow: TextOverflow.ellipsis),
-          )
-        ],
-      ),
-    ),
-  ],
-),
-                              );
-                            },
+                              ),
+                           Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo
+                                    ),
+                                    onPressed: _currentPageClientes > 0
+                                        ? () {
+                                            setState(() {
+                                              _currentPageClientes--;
+                                            });
+                                          }
+                                        : null,
+                                    child: Text('Anterior', overflow: TextOverflow.ellipsis,),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text('Página ${_currentPageClientes + 1} de $totalPages'),
+                                  const SizedBox(width: 10),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo
+                                    ),
+                                    onPressed: _currentPageClientes < totalPages - 1
+                                        ? () {
+                                            setState(() {
+                                              _currentPageClientes++;
+                                            });
+                                          }
+                                        : null,
+                                    child: Text('Próxima', overflow: TextOverflow.ellipsis,),
+                                  ),
+                                ],
+                              ),
+                            ],
                           );
                         }
                       },

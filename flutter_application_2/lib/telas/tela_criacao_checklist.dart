@@ -386,10 +386,29 @@ class _QuestionCardState extends State<QuestionCard> {
   Widget build(BuildContext context) {
     return Card(
     margin: const EdgeInsets.only(bottom: 16),
+     child: Theme(
+      data: Theme.of(context).copyWith(
+        dividerColor: const Color.fromARGB(22, 36, 33, 33),
+        expansionTileTheme: ExpansionTileThemeData(
+          backgroundColor: const Color.fromARGB(255, 200, 200, 200), // Fundo da área da seta
+        ),
+      ),
     child: ExpansionTile(
       title: Text(
         widget.question.questionText.isEmpty ? 'Pergunta' : widget.question.questionText,
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: TextStyle(fontWeight: FontWeight.bold, color: const Color.fromARGB(255, 27, 29, 26)),
+
+      ),
+     trailing: Container(
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 233, 229, 5), // Fundo azul atrás da seta
+          shape: BoxShape.circle, // Deixa o fundo circular
+        ),
+        padding: EdgeInsets.all(4), // Espaçamento interno ao redor do ícone
+        child: Icon(
+          Icons.arrow_drop_down,
+          color: const Color.fromARGB(255, 28, 29, 13), // Cor da seta
+        ),
       ),
       children: [
         Padding(
@@ -403,13 +422,20 @@ class _QuestionCardState extends State<QuestionCard> {
                   children: [
                     TextField(
                       controller: widget.question.questionTextController,
+                    
                       decoration: InputDecoration(
                         hintText: 'Pergunta',
                         filled: true,
-                        fillColor: const Color.fromARGB(255, 233, 233, 233),
+                        fillColor: const Color.fromARGB(255, 230, 227, 227),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
                       ),
                       style: TextStyle(color: const Color.fromARGB(255, 34, 32, 32)),
                       onChanged: (value) {
@@ -502,6 +528,8 @@ class _QuestionCardState extends State<QuestionCard> {
         ),
       ],
     ),
+  ),
   );
+  
 }
 }
