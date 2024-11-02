@@ -143,6 +143,7 @@ Future<void> fetchRelatorio(int checklistId) async {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
+   
     return Scaffold(
       body: Row(
         children: [
@@ -227,64 +228,70 @@ Future<void> fetchRelatorio(int checklistId) async {
                         // Divider(),
                         // Campos descritivos dos checklists
                         Expanded(
-                          child: ListView.builder(
-                            itemCount: (currentPage + 1) * itemsPerPage >
-                                    filteredRelatorios.length
-                                ? filteredRelatorios.length -
-                                    (currentPage * itemsPerPage)
-                                : itemsPerPage,
-                            itemBuilder: (context, index) {
-                              int actualIndex =
-                                  currentPage * itemsPerPage + index;
-                              return Column(
-                                children: [
-                                  SizedBox(
-                                      height: 15), // Espaçamento acima do item
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Expanded(
-                                        child: Center(
-                                          child: Text(
-                                            filteredRelatorios[actualIndex]
-                                                ['titulo'],overflow: TextOverflow.ellipsis
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Center(
-                                          child: Text(
-                                            '${filteredRelatorios[actualIndex]['quantidade'].toString()} Questões',overflow: TextOverflow.ellipsis
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Center(
-                                          child: Text(
-                                            filteredRelatorios[actualIndex]
-                                                ['dataCriacao'],overflow: TextOverflow.ellipsis
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-  child: Center(
-    child: IconButton(
-      icon: Icon(Icons.picture_as_pdf),
-      color: Colors.black,
-    
-      onPressed: () => fetchRelatorio(filteredRelatorios[actualIndex]['id']),
+  child: SingleChildScrollView(
+    scrollDirection: Axis.vertical,
+    child: SingleChildScrollView(
+      scrollDirection: screenSize.width < 600 ? Axis.horizontal : Axis.vertical, // Ativa rolagem horizontal para telas menores
+      child: Container(
+        width: screenSize.width < 600 ? screenSize.width * 1.5 : screenSize.width * 0.9, // Ajuste a largura para permitir a rolagem
+        child: ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(), // Desativa a rolagem interna para que o SingleChildScrollView cuide disso
+          itemCount: (currentPage + 1) * itemsPerPage > filteredRelatorios.length
+              ? filteredRelatorios.length - (currentPage * itemsPerPage)
+              : itemsPerPage,
+          itemBuilder: (context, index) {
+            int actualIndex = currentPage * itemsPerPage + index;
+            return Column(
+              children: [
+                SizedBox(height: 15), // Espaçamento acima do item
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          filteredRelatorios[actualIndex]['titulo'],
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          '${filteredRelatorios[actualIndex]['quantidade'].toString()} Questões',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          filteredRelatorios[actualIndex]['dataCriacao'],
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: IconButton(
+                          icon: Icon(Icons.picture_as_pdf),
+                          color: Colors.black,
+                          onPressed: () => fetchRelatorio(filteredRelatorios[actualIndex]['id']),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        ),
+      ),
     ),
   ),
 ),
 
-                                    ],
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
 
                         // Selecionador de páginas
                         Padding(
@@ -308,37 +315,37 @@ Future<void> fetchRelatorio(int checklistId) async {
                                 child: SizedBox(
                                   width: 50,
 
-                                child: Text(
-      'Anterior',
-      overflow: TextOverflow.ellipsis,
-      textAlign: TextAlign.center,
-    ),
-                                )
-                              ),
-                              Text(
-                                  'Pág ${currentPage + 1} de ${((filteredRelatorios.length - 1) / itemsPerPage).ceil()}'),
-                              ElevatedButton(
-                                onPressed: (currentPage + 1) * itemsPerPage <
-                                        filteredRelatorios.length
-                                    ? () {
-                                        setState(() {
-                                          currentPage++;
-                                        });
-                                      }
-                                    : null,
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.black,
-                                  backgroundColor:
-                                      const Color.fromRGBO(240, 231, 16, 1),
-                                ),
-                                
-                                child: SizedBox(
-                                  width: 50,
-                              child: Text(
-      'Próxima',
-      overflow: TextOverflow.ellipsis,
-      textAlign: TextAlign.center,
-    ),
+                                      child: Text(
+                                          'Anterior',
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      )
+                                    ),
+                                    Text(
+                                        'Pág ${currentPage + 1} de ${((filteredRelatorios.length - 1) / itemsPerPage).ceil()}'),
+                                    ElevatedButton(
+                                      onPressed: (currentPage + 1) * itemsPerPage <
+                                              filteredRelatorios.length
+                                          ? () {
+                                              setState(() {
+                                                currentPage++;
+                                              });
+                                            }
+                                          : null,
+                                      style: ElevatedButton.styleFrom(
+                                        foregroundColor: Colors.black,
+                                        backgroundColor:
+                                            const Color.fromRGBO(240, 231, 16, 1),
+                                      ),
+                                      
+                                      child: SizedBox(
+                                        width: 50,
+                                    child: Text(
+                                          'Próxima',
+                                          
+                                          textAlign: TextAlign.center,
+                                        ),
                                 )
                               ),
                             ],
