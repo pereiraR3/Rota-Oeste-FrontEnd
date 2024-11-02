@@ -316,7 +316,7 @@ Future<void> fetchRelatorio(int checklistId) async {
                                   width: 50,
 
                                       child: Text(
-                                          'Anterior',
+                                          'Ant',
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                         ),
@@ -342,8 +342,8 @@ Future<void> fetchRelatorio(int checklistId) async {
                                       child: SizedBox(
                                         width: 50,
                                     child: Text(
-                                          'Próxima',
-                                          
+                                          'Próx',
+                                          overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                         ),
                                 )

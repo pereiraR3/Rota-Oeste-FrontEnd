@@ -284,7 +284,8 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
                                             });
                                           }
                                         : null,
-                                    child: Text('Anterior', overflow: TextOverflow.ellipsis,),
+                                    child: Text('Ant', overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,),
                                   ),
                                   const SizedBox(width: 10),
                                   Text('Página ${_currentPageChecklists + 1} de $totalPages'),
@@ -300,7 +301,8 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
                                             });
                                           }
                                         : null,
-                                    child: Text('Próxima', overflow: TextOverflow.ellipsis,),
+                                    child: Text('Próx', overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,),
                                   ),
                                 ],
                               ),
@@ -453,7 +455,8 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
                                             });
                                           }
                                         : null,
-                                    child: Text('Anterior', overflow: TextOverflow.ellipsis,),
+                                    child: Text('Ant',overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,),
                                   ),
                                   const SizedBox(width: 10),
                                   Text('Página ${_currentPageClientes + 1} de $totalPages'),
@@ -469,7 +472,8 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
                                             });
                                           }
                                         : null,
-                                    child: Text('Próxima', overflow: TextOverflow.ellipsis,),
+                                    child: Text('Próx', overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,),
                                   ),
                                 ],
                               ),
