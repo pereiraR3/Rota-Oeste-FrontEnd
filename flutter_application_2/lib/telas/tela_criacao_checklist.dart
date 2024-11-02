@@ -390,6 +390,7 @@ class _QuestionCardState extends State<QuestionCard> {
       title: Text(
         widget.question.questionText.isEmpty ? 'Pergunta' : widget.question.questionText,
         style: TextStyle(fontWeight: FontWeight.bold),
+        selectionColor:  const Color.fromARGB(255, 84, 219, 6)
       ),
       children: [
         Padding(
@@ -406,10 +407,16 @@ class _QuestionCardState extends State<QuestionCard> {
                       decoration: InputDecoration(
                         hintText: 'Pergunta',
                         filled: true,
-                        fillColor: const Color.fromARGB(255, 233, 233, 233),
+                        fillColor: const Color.fromARGB(255, 230, 227, 227),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
                       ),
                       style: TextStyle(color: const Color.fromARGB(255, 34, 32, 32)),
                       onChanged: (value) {
