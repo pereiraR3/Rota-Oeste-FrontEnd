@@ -388,7 +388,7 @@ class _QuestionCardState extends State<QuestionCard> {
     margin: const EdgeInsets.only(bottom: 16),
      child: Theme(
       data: Theme.of(context).copyWith(
-        dividerColor: Colors.transparent,
+        dividerColor: const Color.fromARGB(22, 36, 33, 33),
         expansionTileTheme: ExpansionTileThemeData(
           backgroundColor: const Color.fromARGB(255, 200, 200, 200), // Fundo da área da seta
         ),
@@ -399,10 +399,16 @@ class _QuestionCardState extends State<QuestionCard> {
         style: TextStyle(fontWeight: FontWeight.bold, color: const Color.fromARGB(255, 27, 29, 26)),
 
       ),
-      trailing: Icon(
-        Icons.arrow_drop_down, // Ícone customizado para seta
-        color: const Color.fromARGB(255, 216, 231, 3), // Cor da seta
-        
+     trailing: Container(
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 233, 229, 5), // Fundo azul atrás da seta
+          shape: BoxShape.circle, // Deixa o fundo circular
+        ),
+        padding: EdgeInsets.all(4), // Espaçamento interno ao redor do ícone
+        child: Icon(
+          Icons.arrow_drop_down,
+          color: const Color.fromARGB(255, 28, 29, 13), // Cor da seta
+        ),
       ),
       children: [
         Padding(
