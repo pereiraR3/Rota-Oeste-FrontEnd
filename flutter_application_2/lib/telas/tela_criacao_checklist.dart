@@ -263,7 +263,7 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
                                   Flexible(
                                         child: Container(
                                           constraints: BoxConstraints(
-                                            maxWidth: screenSize.width < 400 ? screenSize.width * 0.8 : 200,
+                                            maxWidth: screenSize.width < 400 ? screenSize.width * 0.8 : 220,
                                           ),
                                           child: TextField(
                                             controller: nomeCheckListController,
@@ -304,7 +304,7 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
                                       foregroundColor: Colors.black,
                                       backgroundColor:
                                           const Color.fromRGBO(240, 231, 16, 1),
-                                    ),
+                                                                         ),
                                   ),
                                 ),
                             ],

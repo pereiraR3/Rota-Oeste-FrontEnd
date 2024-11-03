@@ -115,7 +115,7 @@ class _TelaCadastroClienteState extends State<TelaCadastroCliente> {
                   SizedBox(height: 40),
                   Container(
                     padding: EdgeInsets.all(20),
-                    width: screenSize.width * 0.4,
+                    width: screenSize.width * 0.8,
                     height: screenSize.height * 0.6,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),

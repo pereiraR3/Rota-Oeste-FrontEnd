@@ -115,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   constraints: BoxConstraints(
                     maxWidth: 400, // Limita a largura máxima para telas grandes
-                    minWidth: isSmallScreen ? constraints.maxWidth * 0.9 : 400,
+  minWidth: isSmallScreen ? (constraints.maxWidth * 0.9).clamp(0.0, 400) : 400,
                   ),
                   padding: EdgeInsets.all(20),
                   child: Column(
@@ -151,10 +151,13 @@ class ImgLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Image.asset('img/login.jpg'),
       width: 500,
       height: 500,
-      
+      child: Image.asset(
+        'img/image.png', // Caminho para a imagem SVG
+        width: 500,
+        height: 500,
+      ),
     );
   }
 }
@@ -300,13 +303,13 @@ class BotaoLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
   return Padding(
-    padding: const EdgeInsets.all(10.0), // Define uma margem ao redor do botão
+    padding: const EdgeInsets.all(15.0), // Define uma margem ao redor do botão
     child: ElevatedButton(
       onPressed: () => loginFunction(),
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(Color.fromRGBO(240, 231, 16, 1)),
         foregroundColor: MaterialStateProperty.all(Colors.black),
-        fixedSize: MaterialStateProperty.all(Size(140, 50)),
+        fixedSize: MaterialStateProperty.all(Size(250, 50)),
         shape: MaterialStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
