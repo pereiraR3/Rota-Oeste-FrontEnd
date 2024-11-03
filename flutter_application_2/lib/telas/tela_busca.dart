@@ -223,7 +223,7 @@ Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    width: 600,
+                    width: 850,
                     height: 45,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
@@ -247,12 +247,14 @@ Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async
                       color: Color.fromRGBO(117, 117, 117, 1),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(15.0),
                       child: Column(
                         children: [
                           // Campo de busca dentro do container
                           Container(
-                            width: 500,
+                            width: 850,
+                              margin: EdgeInsets.symmetric(vertical: 26), // Margem horizontal
+
                             child: TextField(
                               controller: _searchController,
                               decoration: InputDecoration(
@@ -330,14 +332,14 @@ DropdownButton<String>(
         )
       : Icon(Icons.arrow_drop_down, color: Colors.white), // Ícone em telas menores
   value: _selectedItems[index],
-  dropdownColor: Colors.grey[800],
+  dropdownColor: const Color.fromARGB(255, 213, 216, 19),
   isExpanded: false, // Mantém o dropdown menor
   items: dropdownItems.map((String item) {
     return DropdownMenuItem<String>(
       value: item,
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.3, // Define uma largura máxima
+          maxWidth: MediaQuery.of(context).size.width * 0.2, // Define uma largura máxima
         ),
         child: Text(
           item,
@@ -365,7 +367,9 @@ DropdownButton<String>(
                               },
                             ),
                           ),
-                          ElevatedButton(
+                         Container(
+  margin: EdgeInsets.only(top: 32), // Adiciona uma margem maior no topo
+  child:  ElevatedButton(
                             onPressed: _verificarSelecaoValida() ? (){
                               List<Map<String, int>> relacoes = obterRelacoesClientesChecklists();
 
@@ -382,7 +386,8 @@ DropdownButton<String>(
                                   const Color.fromRGBO(240, 231, 16, 1),
                             ),
                           )
-                        ],
+                          ),
+                        ]
                       ),
                     ),
                   ),

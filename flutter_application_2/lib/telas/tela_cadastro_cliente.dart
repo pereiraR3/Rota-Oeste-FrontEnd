@@ -124,6 +124,7 @@ class _TelaCadastroClienteState extends State<TelaCadastroCliente> {
                     child: Column(
                       children: [
                         Container(
+                          
                           padding: EdgeInsets.all(5),
                           child: Text(
                             "Nome:",
@@ -136,10 +137,11 @@ class _TelaCadastroClienteState extends State<TelaCadastroCliente> {
                           ),
                         ),
                         SizedBox(
-                          width: 250,
+                          width: 600,
                           child: TextField(
                             controller: _nomeController,
                             decoration: InputDecoration(
+                            
                               filled: true,
                               fillColor: const Color.fromRGBO(240, 231, 16, 80),
                               hintText: "Digite o nome",
@@ -162,7 +164,7 @@ class _TelaCadastroClienteState extends State<TelaCadastroCliente> {
                           ),
                         ),
                         SizedBox(
-                          width: 250,
+                          width: 600,
                           child: TextField(
                             controller: _telefoneController,
                             decoration: InputDecoration(
