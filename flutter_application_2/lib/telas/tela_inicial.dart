@@ -146,41 +146,7 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
                     'Clientes que receberam envios mais recentes',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  Container(
-                    color: Color.fromRGBO(240, 231, 16, 1),
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Cliente",
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Telefone",
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Checklist",
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                 
                   const SizedBox(height: 5),
                   Expanded(
                     child: FutureBuilder<List<dynamic>>(
@@ -197,118 +163,149 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
                           final totalPages = (totalItems / _itemsPerPage).ceil();
                           final itemsToShow = snapshot.data!.skip(_currentPageClientes * _itemsPerPage).take(_itemsPerPage).toList();
 
-                          return Column(
+                          return 
+                       Column(
+  children: [
+    Expanded(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Column(
+          children: [
+            // Cabeçalho
+            Row(
+              children: [
+                 ClipRRect(
+                  borderRadius: BorderRadius.circular(10), // Define o arredondamento das bordas
+                  child: Container(
+                  
+                  color: Color.fromRGBO(240, 231, 16, 1),
+                    padding: EdgeInsets.all(8.0),
+                  width: 800, // Defina uma largura que coincida com a lista de dados abaixo
+                  child: Row(
+                    
+                    children: [
+                      Expanded(child: Text('Nome', style: TextStyle(fontWeight: FontWeight.bold))),
+                      Expanded(child: Text('Telefone', style: TextStyle(fontWeight: FontWeight.bold))),
+                      Expanded(child: Text('Checklist', style: TextStyle(fontWeight: FontWeight.bold))),
+                    ],
+                  ),
+                ),
+                )
+              ],
+            ),
+            // Lista de dados
+            SizedBox(
+              width: 800, // Largura para coincidir com o cabeçalho
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: itemsToShow.length,
+                itemBuilder: (context, index) {
+                  var cliente = itemsToShow[index];
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Row(
                             children: [
-                              Expanded(
-                                child: LayoutBuilder(
-                                  builder: (context, constraints) {
-                                    return SingleChildScrollView(
-                                      scrollDirection: constraints.maxWidth < 600 ? Axis.horizontal : Axis.vertical,
-                                      child: SizedBox(
-                                        width: constraints.maxWidth < 600 ? 800 : constraints.maxWidth,
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          physics: NeverScrollableScrollPhysics(),
-                                          itemCount: itemsToShow.length,
-                                          itemBuilder: (context, index) {
-                                            var cliente = itemsToShow[index];
-                                            return Card(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(15),
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(Icons.person),
-                                                        const SizedBox(width: 5),
-                                                        Flexible(
-                                                          child: Text(
-                                                            cliente['nome'] ?? 'Nome não disponível',
-                                                            overflow: TextOverflow.ellipsis,
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(Icons.phone),
-                                                        const SizedBox(width: 5),
-                                                        Flexible(
-                                                          child: Text(
-                                                            cliente['telefone'] ?? 'Telefone não disponível',
-                                                            overflow: TextOverflow.ellipsis,
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(Icons.checklist),
-                                                        const SizedBox(width: 5),
-                                                        Flexible(
-                                                          child: Text(
-                                                            cliente['checklist'] ?? 'Checklist não disponível',
-                                                            overflow: TextOverflow.ellipsis,
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    );
-                                  },
+                              Icon(Icons.person),
+                              const SizedBox(width: 5),
+                              Flexible(
+                                child: Text(
+                                  cliente['nome'] ?? 'Nome não disponível',
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                                 Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo
-                                    ),
-                                    onPressed: _currentPageChecklists > 0
-                                        ? () {
-                                            setState(() {
-                                              _currentPageChecklists--;
-                                            });
-                                          }
-                                        : null,
-                                    child: Text('Ant', overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Text('Página ${_currentPageChecklists + 1} de $totalPages'),
-                                  const SizedBox(width: 10),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo
-                                    ),
-                                    onPressed: _currentPageChecklists < totalPages - 1
-                                        ? () {
-                                            setState(() {
-                                              _currentPageChecklists++;
-                                            });
-                                          }
-                                        : null,
-                                    child: Text('Próx', overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,),
-                                  ),
-                                ],
-                              ),
+                              )
                             ],
-                          );
-                        }
+                          ),
+                        ),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Icon(Icons.phone),
+                              const SizedBox(width: 5),
+                              Flexible(
+                                child: Text(
+                                  cliente['telefone'] ?? 'Telefone não disponível',
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Icon(Icons.checklist),
+                              const SizedBox(width: 5),
+                              Flexible(
+                                child: Text(
+                                  cliente['checklist'] ?? 'Checklist não disponível',
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+    // Paginação
+    Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo
+          ),
+          onPressed: _currentPageChecklists > 0
+              ? () {
+                  setState(() {
+                    _currentPageChecklists--;
+                  });
+                }
+              : null,
+          child: Text(
+            'Ant',
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        const SizedBox(width: 10),
+        Text('Página ${_currentPageChecklists + 1} de $totalPages'),
+        const SizedBox(width: 10),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo
+          ),
+          onPressed: _currentPageChecklists < totalPages - 1
+              ? () {
+                  setState(() {
+                    _currentPageChecklists++;
+                  });
+                }
+              : null,
+          child: Text(
+            'Próx',
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    ),
+  ],
+);
+  }
                       },
                     ),
                   ),
@@ -317,41 +314,7 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
                     'Checklists mais recentes',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  Container(
-                    color: Color.fromRGBO(240, 231, 16, 1),
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Nome",
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Número de Questões",
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Data de Criação",
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  
                   const SizedBox(height: 5),
                   Expanded(
                     child: FutureBuilder<List<dynamic>>(
@@ -368,118 +331,150 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
                           final totalPages = (totalItems / _itemsPerPage).ceil();
                           final itemsToShow = snapshot.data!.skip(_currentPageChecklists * _itemsPerPage).take(_itemsPerPage).toList();
 
-                          return Column(
+                          return 
+                         Column(
+  children: [
+    Expanded(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Column(
+          children: [
+            // Cabeçalho
+            Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10), // Define o arredondamento das bordas
+                  child: Container(
+                  
+                  color: Color.fromRGBO(240, 231, 16, 1),
+                    padding: EdgeInsets.all(8.0),
+                  width: 800, // Defina uma largura que coincida com a lista de dados abaixo
+                  child: Row(
+                    
+                    children: [
+                      Expanded(child: Text('Nome', style: TextStyle(fontWeight: FontWeight.bold))),
+                      Expanded(child: Text('Quantidade de Questões', style: TextStyle(fontWeight: FontWeight.bold))),
+                      Expanded(child: Text('Data de Criação', style: TextStyle(fontWeight: FontWeight.bold))),
+                    ],
+                  ),
+                ),
+                )
+              ],
+            
+            ),
+            // Lista de dados
+            SizedBox(
+              width: 800, // Largura para coincidir com o cabeçalho
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: itemsToShow.length,
+                itemBuilder: (context, index) {
+                  var checklist = itemsToShow[index];
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Row(
                             children: [
-                              Expanded(
-                                child: LayoutBuilder(
-                                  builder: (context, constraints) {
-                                    return SingleChildScrollView(
-                                      scrollDirection: constraints.maxWidth < 600 ? Axis.horizontal : Axis.vertical,
-                                      child: SizedBox(
-                                        width: constraints.maxWidth < 600 ? 800 : constraints.maxWidth,
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          physics: NeverScrollableScrollPhysics(),
-                                          itemCount: itemsToShow.length,
-                                          itemBuilder: (context, index) {
-                                            var checklist = itemsToShow[index];
-                                            return Card(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(Icons.checklist),
-                                                        const SizedBox(width: 5),
-                                                        Flexible(
-                                                          child: Text(
-                                                            checklist['nome'] ?? 'Nome não disponível',
-                                                            overflow: TextOverflow.ellipsis,
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(Icons.numbers),
-                                                        const SizedBox(width: 5),
-                                                        Flexible(
-                                                          child: Text(
-                                                            "${checklist['quantityQuestoes']} questões",
-                                                            overflow: TextOverflow.ellipsis,
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(Icons.date_range),
-                                                        const SizedBox(width: 5),
-                                                        Flexible(
-                                                          child: Text(
-                                                            formatarData(checklist['dataCriacao']),
-                                                            overflow: TextOverflow.ellipsis,
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    );
-                                  },
+                              Icon(Icons.checklist),
+                              const SizedBox(width: 5),
+                              Flexible(
+                                child: Text(
+                                  checklist['nome'] ?? 'Nome não disponível',
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                           Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo
-                                    ),
-                                    onPressed: _currentPageClientes > 0
-                                        ? () {
-                                            setState(() {
-                                              _currentPageClientes--;
-                                            });
-                                          }
-                                        : null,
-                                    child: Text('Ant',overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Text('Página ${_currentPageClientes + 1} de $totalPages'),
-                                  const SizedBox(width: 10),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo
-                                    ),
-                                    onPressed: _currentPageClientes < totalPages - 1
-                                        ? () {
-                                            setState(() {
-                                              _currentPageClientes++;
-                                            });
-                                          }
-                                        : null,
-                                    child: Text('Próx', overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,),
-                                  ),
-                                ],
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Icon(Icons.numbers),
+                              const SizedBox(width: 5),
+                              Flexible(
+                                child: Text(
+                                  "${checklist['quantityQuestoes']} questões",
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             ],
-                          );
-                        }
+                          ),
+                        ),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Icon(Icons.date_range),
+                              const SizedBox(width: 5),
+                              Flexible(
+                                child: Text(
+                                  formatarData(checklist['dataCriacao']),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+    // Paginação
+    Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo
+          ),
+          onPressed: _currentPageClientes > 0
+              ? () {
+                  setState(() {
+                    _currentPageClientes--;
+                  });
+                }
+              : null,
+          child: Text(
+            'Ant',
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        const SizedBox(width: 10),
+        Text('Página ${_currentPageClientes + 1} de $totalPages'),
+        const SizedBox(width: 10),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color.fromRGBO(240, 231, 16, 1), // Fundo amarelo
+          ),
+          onPressed: _currentPageClientes < totalPages - 1
+              ? () {
+                  setState(() {
+                    _currentPageClientes++;
+                  });
+                }
+              : null,
+          child: Text(
+            'Próx',
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    ),
+  ],
+);
+}
                       },
                     ),
                   ),

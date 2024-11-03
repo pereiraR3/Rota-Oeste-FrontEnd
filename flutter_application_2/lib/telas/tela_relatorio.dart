@@ -140,226 +140,233 @@ Future<void> fetchRelatorio(int checklistId) async {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-   
-    return Scaffold(
-      body: Row(
-        children: [
-          SideBar(token: widget.token),
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.02),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Gere os relatórios aqui',
-                  style: TextStyle(fontSize: screenSize.width * 0.04, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: screenSize.height * 0.02),
-                  Container(
-                    width: screenSize.width * 0.8,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Procurar por relatório',
-                        filled: true,
-                        contentPadding: EdgeInsets.symmetric(vertical: 15.0), // Alinhamento vertical
+@override
+Widget build(BuildContext context) {
+  final screenSize = MediaQuery.of(context).size;
 
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        prefixIcon: Icon(Icons.search),
+  return Scaffold(
+    body: Row(
+      children: [
+        SideBar(token: widget.token),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.02),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Gere os relatórios aqui',
+                  style: TextStyle(fontSize: screenSize.width * 0.04, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: screenSize.height * 0.02),
+                Container(
+                  width: screenSize.width * 0.8,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Procurar por relatório',
+                      filled: true,
+                      contentPadding: EdgeInsets.symmetric(vertical: 15.0),
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                      onChanged: filterRelatorios, // Chama a função de busca
+                      prefixIcon: Icon(Icons.search),
                     ),
+                    onChanged: filterRelatorios,
                   ),
-                  SizedBox(height: screenSize.height * 0.02),
-                  Container(
-                    width: screenSize.width * 0.9,
-                    height: screenSize.height * 0.6,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(color: Colors.black, width: 2),
-                    ),
+                ),
+                SizedBox(height: screenSize.height * 0.02),
+                Container(
+                  width: screenSize.width * 0.9,
+                  height: screenSize.height * 0.6,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.black, width: 2),
+                  ),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
                     child: Column(
                       children: [
                         // Cabeçalho
                         Container(
+                          padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(15),
+                              topRight: Radius.circular(15),
+                            ),
                             color: Color.fromRGBO(240, 231, 16, 1),
                           ),
+                          width: screenSize.width < 600 ? screenSize.width * 1.5 : screenSize.width * 0.9,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Expanded(
                                 child: Center(
-                                  child: Text('Nome do Relatório',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),textAlign: TextAlign.center, overflow: TextOverflow.ellipsis),
+                                  child: Text(
+                                    'Nome do Relatório',
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ),
                               Expanded(
                                 child: Center(
-                                  child: Text('Quantidade de Questões',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),textAlign: TextAlign.center,overflow: TextOverflow.ellipsis),
+                                  child: Text(
+                                    'Quantidade de Questões',
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ),
                               Expanded(
                                 child: Center(
-                                  child: Text('Data de Criação', 
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),textAlign: TextAlign.center,overflow: TextOverflow.ellipsis),
+                                  child: Text(
+                                    'Data de Criação',
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ),
                               Expanded(
                                 child: Center(
-                                    child:
-                                        Text('')), // Coluna vazia para o botão
+                                  child: Text(''), // Coluna vazia para o botão
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        // Divider(),
-                        // Campos descritivos dos checklists
+                        // Lista de dados
                         Expanded(
-  child: SingleChildScrollView(
-    scrollDirection: Axis.vertical,
-    child: SingleChildScrollView(
-      scrollDirection: screenSize.width < 600 ? Axis.horizontal : Axis.vertical, // Ativa rolagem horizontal para telas menores
-      child: Container(
-        width: screenSize.width < 600 ? screenSize.width * 1.5 : screenSize.width * 0.9, // Ajuste a largura para permitir a rolagem
-        child: ListView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(), // Desativa a rolagem interna para que o SingleChildScrollView cuide disso
-          itemCount: (currentPage + 1) * itemsPerPage > filteredRelatorios.length
-              ? filteredRelatorios.length - (currentPage * itemsPerPage)
-              : itemsPerPage,
-          itemBuilder: (context, index) {
-            int actualIndex = currentPage * itemsPerPage + index;
-            return Column(
-              children: [
-                SizedBox(height: 15), // Espaçamento acima do item
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          filteredRelatorios[actualIndex]['titulo'],
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          '${filteredRelatorios[actualIndex]['quantidade'].toString()} Questões',
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          filteredRelatorios[actualIndex]['dataCriacao'],
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: IconButton(
-                          icon: Icon(Icons.picture_as_pdf),
-                          color: Colors.black,
-                          onPressed: () => fetchRelatorio(filteredRelatorios[actualIndex]['id']),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            );
-          },
-        ),
-      ),
-    ),
-  ),
-),
-
-
-                        // Selecionador de páginas
-                        Padding(
-                          padding: EdgeInsets.all(screenSize.width * 0.02),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ElevatedButton(
-                                onPressed: currentPage > 0
-                                    ? () {
-                                        setState(() {
-                                          currentPage--;
-                                        });
-                                      }
-                                    : null,
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.black,
-                                  backgroundColor:
-                                      const Color.fromRGBO(240, 231, 16, 1),
-                                ),
-                                child: SizedBox(
-                                  width: 50,
-
-                                      child: Text(
-                                          'Ant',
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      )
-                                    ),
-                                    Text(
-                                        'Pág ${currentPage + 1} de ${((filteredRelatorios.length - 1) / itemsPerPage).ceil()}'),
-                                    ElevatedButton(
-                                      onPressed: (currentPage + 1) * itemsPerPage <
-                                              filteredRelatorios.length
-                                          ? () {
-                                              setState(() {
-                                                currentPage++;
-                                              });
-                                            }
-                                          : null,
-                                      style: ElevatedButton.styleFrom(
-                                        foregroundColor: Colors.black,
-                                        backgroundColor:
-                                            const Color.fromRGBO(240, 231, 16, 1),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Container(
+                              width: screenSize.width < 600 ? screenSize.width * 1.5 : screenSize.width * 0.9,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: (currentPage + 1) * itemsPerPage > filteredRelatorios.length
+                                    ? filteredRelatorios.length - (currentPage * itemsPerPage)
+                                    : itemsPerPage,
+                                itemBuilder: (context, index) {
+                                  int actualIndex = currentPage * itemsPerPage + index;
+                                  return Column(
+                                    children: [
+                                      SizedBox(height: 15),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Expanded(
+                                            child: Center(
+                                              child: Text(
+                                                filteredRelatorios[actualIndex]['titulo'],
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Center(
+                                              child: Text(
+                                                '${filteredRelatorios[actualIndex]['quantidade'].toString()} Questões',
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Center(
+                                              child: Text(
+                                                filteredRelatorios[actualIndex]['dataCriacao'],
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Center(
+                                              child: IconButton(
+                                                icon: Icon(Icons.picture_as_pdf),
+                                                color: Colors.black,
+                                                onPressed: () => fetchRelatorio(filteredRelatorios[actualIndex]['id']),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      
-                                      child: SizedBox(
-                                        width: 50,
-                                    child: Text(
-                                          'Próx',
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                )
+                                    ],
+                                  );
+                                },
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+                // Paginação
+                Padding(
+                  padding: EdgeInsets.all(screenSize.width * 0.02),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        onPressed: currentPage > 0
+                            ? () {
+                                setState(() {
+                                  currentPage--;
+                                });
+                              }
+                            : null,
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.black,
+                          backgroundColor: const Color.fromRGBO(240, 231, 16, 1),
+                        ),
+                        child: SizedBox(
+                          width: 50,
+                          child: Text(
+                            'Ant',
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        'Pág ${currentPage + 1} de ${((filteredRelatorios.length - 1) / itemsPerPage).ceil()}',
+                      ),
+                      ElevatedButton(
+                        onPressed: (currentPage + 1) * itemsPerPage < filteredRelatorios.length
+                            ? () {
+                                setState(() {
+                                  currentPage++;
+                                });
+                              }
+                            : null,
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.black,
+                          backgroundColor: const Color.fromRGBO(240, 231, 16, 1),
+                        ),
+                        child: SizedBox(
+                          width: 50,
+                          child: Text(
+                            'Próx',
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
+
 }
