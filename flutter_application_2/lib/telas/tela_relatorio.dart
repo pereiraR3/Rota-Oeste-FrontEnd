@@ -16,7 +16,7 @@ class RelatorioScreen extends StatefulWidget {
 }
 
 class _RelatorioScreenState extends State<RelatorioScreen> {
-  final String UrlBase = 'http://localhost:5092';  
+  final String UrlBase = 'https://bb21-200-129-242-3.ngrok-free.app';  
   List<dynamic> relatorios = [];
   List<dynamic> filteredRelatorios = [];
   int currentPage = 0;
