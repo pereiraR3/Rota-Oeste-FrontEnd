@@ -16,7 +16,7 @@ class TelaCadastroCliente extends StatefulWidget {
 class _TelaCadastroClienteState extends State<TelaCadastroCliente> {
   late TextEditingController _nomeController;
   late TextEditingController _telefoneController;
-
+  final String UrlBase = 'https://bb21-200-129-242-3.ngrok-free.app';
   String? token;
 
   @override
@@ -39,7 +39,7 @@ class _TelaCadastroClienteState extends State<TelaCadastroCliente> {
     try {
       // Fazendo a requisição HTTP POST
       final response = await http.post(
-        Uri.parse('http://localhost:5092/cliente/adicionar'),
+        Uri.parse('${UrlBase}/cliente/adicionar'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',

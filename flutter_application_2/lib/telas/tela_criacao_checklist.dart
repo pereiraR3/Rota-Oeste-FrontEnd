@@ -14,7 +14,7 @@ class TelaCriacaoChecklist extends StatefulWidget {
 class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
   String? token;
   List<Question> questions = [];
-  final String BaseUrl = 'http://localhost:5092';
+  final String BaseUrl = 'https://bb21-200-129-242-3.ngrok-free.app';
   final TextEditingController nomeCheckListController = TextEditingController();
 
   void addQuestion() {
@@ -49,7 +49,7 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
       print(token);
       // Fazendo a requisição HTTP POST
       final response = await http.post(
-        Uri.parse('http://localhost:5092/checklist/adicionar'),
+        Uri.parse('${BaseUrl}/checklist/adicionar'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
         }
         // Fazendo a requisição HTTP POST para cada questão
         final response = await http.post(
-          Uri.parse('http://localhost:5092/questao/adicionar'),
+          Uri.parse('${BaseUrl}/questao/adicionar'),
           headers: {
             'Authorization': 'Bearer $token',
             'Content-Type': 'application/json',
@@ -163,7 +163,7 @@ class _TelaCriacaoChecklistState extends State<TelaCriacaoChecklist> {
 
         // Enviando requisição HTTP POST para adicionar alternativa
         final response = await http.post(
-          Uri.parse('http://localhost:5092/alternativa/adicionar'),
+          Uri.parse('${BaseUrl}/alternativa/adicionar'),
           headers: {
             'Authorization': 'Bearer $token',
             'Content-Type': 'application/json',

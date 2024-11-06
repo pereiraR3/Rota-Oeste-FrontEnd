@@ -17,7 +17,7 @@ class TelaBuscaScreen extends StatefulWidget {
 class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
   // Lista de seleção para o Checkbox
   List<bool> _isChecked = [];
-  final String UrlBase = 'http://localhost:5092';  
+  final String UrlBase = 'https://bb21-200-129-242-3.ngrok-free.app';  
 
   List<String> dropdownItems = [];
   List<dynamic> listaClientes = [];
@@ -171,15 +171,24 @@ List<Map<String, int>> obterRelacoesClientesChecklists() {
 }
 
 Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async {
-  final url = Uri.parse('${UrlBase}/checklist/adicionar/clienteId/$clienteId/checklistId/$checkListId');
-
+  final url = Uri.parse('${UrlBase}/checklist/adicionar/$clienteId/$checkListId');
+  final url2 = Uri.parse('${UrlBase}/api/whatsapp/enviar-em-massa');
   try {
     final response = await http.post(
-      url,
+      url2,
       headers: {
         'Authorization': 'Bearer ${widget.token}',
         'Content-Type': 'application/json',
       },
+     body: jsonEncode({
+  "checkListComTelefones": [
+    {
+      "clienteId": clienteId,
+      "checkListId": checkListId
+    }
+  ,]
+})
+
     );
 
     if (response.statusCode >= 200 && response.statusCode < 400) {
