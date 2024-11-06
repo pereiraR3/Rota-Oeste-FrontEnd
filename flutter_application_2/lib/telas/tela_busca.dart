@@ -171,15 +171,24 @@ List<Map<String, int>> obterRelacoesClientesChecklists() {
 }
 
 Future<void> enviarRelacaoClienteChecklist(int clienteId, int checkListId) async {
-  final url = Uri.parse('${UrlBase}/checklist/adicionar/clienteId/$clienteId/checklistId/$checkListId');
-
+  final url = Uri.parse('${UrlBase}/checklist/adicionar/$clienteId/$checkListId');
+  final url2 = Uri.parse('${UrlBase}/api/whatsapp/enviar-em-massa');
   try {
     final response = await http.post(
-      url,
+      url2,
       headers: {
         'Authorization': 'Bearer ${widget.token}',
         'Content-Type': 'application/json',
       },
+     body: jsonEncode({
+  "checkListComTelefones": [
+    {
+      "clienteId": clienteId,
+      "checkListId": checkListId
+    }
+  ,]
+})
+
     );
 
     if (response.statusCode >= 200 && response.statusCode < 400) {
