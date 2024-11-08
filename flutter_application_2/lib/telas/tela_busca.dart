@@ -17,7 +17,7 @@ class TelaBuscaScreen extends StatefulWidget {
 class _TelaBuscaScreenState extends State<TelaBuscaScreen> {
   // Lista de seleção para o Checkbox
   List<bool> _isChecked = [];
-  final String UrlBase = 'https://bb21-200-129-242-3.ngrok-free.app';  
+  final String UrlBase = 'http://localhost:5092';  
 
   List<String> dropdownItems = [];
   List<dynamic> listaClientes = [];
@@ -69,6 +69,7 @@ bool _verificarSelecaoValida() {
             listaChecklist = data.map((item) {
               String titulo = item['nome'] ?? 'Sem checklist';
               int id = item['id'];
+              int quantidade = item['quantityQuestoes'];
               return {'titulo': titulo, 'id': id};
             }).toList();
 

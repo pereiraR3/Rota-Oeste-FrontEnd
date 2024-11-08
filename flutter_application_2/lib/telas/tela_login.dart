@@ -15,7 +15,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final String UrlBase = 'https://bb21-200-129-242-3.ngrok-free.app';
+  final String UrlBase = 'http://localhost:5092';
   @override
   void dispose() {
     usernameController.dispose();

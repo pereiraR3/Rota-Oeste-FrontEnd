@@ -17,7 +17,7 @@ class ClientChecklistScreen extends StatefulWidget {
 
 class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
   String? token;
-  final String UrlBase = 'https://bb21-200-129-242-3.ngrok-free.app';
+  final String UrlBase = 'http://localhost:5092';
  int _currentPageChecklists = 0;
   int _currentPageClientes = 0;
   final int _itemsPerPage = 5;
@@ -59,7 +59,9 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
         },
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 ) {
+      print('Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
       return json.decode(response.body);
     } else {
       throw Exception('Erro ao carregar clientes');
@@ -94,41 +96,65 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
     );
 
     if (response.statusCode == 200) {
+      print(response.body);
       return json.decode(response.body);
     } else {
-      throw Exception('Erro ao carregar checklists');
+      throw Exception('Erro ao carregar Interacao checklist e cliente');
     }
   }
 
+Future<List<Map<String, dynamic>>> fetchClientesFiltrados() async {
+  try {
+    // Carrega os clientes
+    final List<Map<String, dynamic>> clientes = List<Map<String, dynamic>>.from(await fetchClientes());
+    print('Clientes carregados: $clientes');
 
- 
- Future<List<Map<String, dynamic>>> fetchClientesFiltrados() async {
-  final clientes = await fetchClientes();
-  final interacoes = await fetchInteracao();
-  final checklists = await fetchChecklists();
+    // Carrega as interações
+    final List<Map<String, dynamic>> interacoes = List<Map<String, dynamic>>.from(await fetchInteracao());
+    print('Interações carregadas: $interacoes');
 
-  // Cria um mapa para acesso rápido ao nome do checklist pelo ID
-  final checklistsMap = {
-    for (var checklist in checklists) checklist['id']: checklist['nome']
-  };
+    // Carrega os checklists
+    final List<Map<String, dynamic>> checklists = List<Map<String, dynamic>>.from(await fetchChecklists());
+    print('Checklists carregados: $checklists');
 
-  // Cria um mapa para acesso rápido aos dados do cliente pelo ID
-  final clientesMap = {
-    for (var cliente in clientes) cliente['id']: cliente
-  };
-
-  // Mapeia todas as interações para retornar os dados necessários
-  return interacoes.map((interacao) {
-    final cliente = clientesMap[interacao['clienteId']];
-    final checklistNome = checklistsMap[interacao['checkListId']] ?? 'Checklist não disponível';
-
-    return {
-      'nome': cliente?['nome'] ?? 'Nome não disponível',
-      'telefone': cliente?['telefone'] ?? 'Telefone não disponível',
-      'checklist': checklistNome,
+    // Mapa de checklists para acesso rápido pelo ID
+    final Map<int, String> checklistsMap = {
+      for (var checklist in checklists) checklist['id']: checklist['nome']
     };
-  }).toList();
+    print('Mapa de Checklists: $checklistsMap');
+
+    // Mapa de clientes para acesso rápido pelo ID
+    final Map<int, Map<String, dynamic>> clientesMap = {
+      for (var cliente in clientes) cliente['id']: cliente
+    };
+    print('Mapa de Clientes: $clientesMap');
+
+    // Processa as interações para retornar os dados combinados
+    final List<Map<String, dynamic>> resultado = interacoes.map<Map<String, dynamic>>((interacao) {
+      final int? clienteId = interacao['clienteId'];
+      final int? checklistId = interacao['checkListId'];
+
+      // Obtém os dados do cliente e do checklist associados
+      final cliente = clienteId != null ? clientesMap[clienteId] : null;
+      final checklistNome = checklistId != null ? checklistsMap[checklistId] : 'Checklist não disponível';
+
+      // Retorna o mapa com as informações necessárias
+      return {
+        'nome': cliente != null ? cliente['nome'] : 'Nome não disponível',
+        'telefone': cliente != null ? cliente['telefone'] : 'Telefone não disponível',
+        'checklist': checklistNome,
+      };
+    }).toList();
+
+    print('Resultado final: $resultado');
+    return resultado;
+  } catch (e) {
+    print('Erro ao filtrar clientes: $e');
+    throw Exception('Erro ao processar os dados');
+  }
 }
+ 
+
 
    @override
   Widget build(BuildContext context) {
@@ -149,21 +175,22 @@ class _ClientChecklistScreenState extends State<ClientChecklistScreen> {
                  
                   const SizedBox(height: 5),
                   Expanded(
-                    child: FutureBuilder<List<dynamic>>(
-                      future: fetchClientesFiltrados(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
-                          return const Center(child: Text("Erro ao carregar clientes"));
-                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return const Center(child: Text("Nenhum cliente encontrado"));
-                        } else {
-                          final totalItems = snapshot.data!.length;
-                          final totalPages = (totalItems / _itemsPerPage).ceil();
-                          final itemsToShow = snapshot.data!.skip(_currentPageClientes * _itemsPerPage).take(_itemsPerPage).toList();
+                    child: FutureBuilder<List<Map<String, dynamic>>>(
+    future: fetchClientesFiltrados(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const Center(child: CircularProgressIndicator());
+      } else if (snapshot.hasError) {
+        print('Erro no FutureBuilder: ${snapshot.error}');
+        return const Center(child: Text("Erro ao carregar clientes aqui"));
+      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        return const Center(child: Text("Nenhum cliente encontrado"));
+      } else {
+        final totalItems = snapshot.data!.length;
+        final totalPages = (totalItems / _itemsPerPage).ceil();
+        final itemsToShow = snapshot.data!.skip(_currentPageClientes * _itemsPerPage).take(_itemsPerPage).toList();
 
-                          return 
+        return 
                        Column(
   children: [
     Expanded(

@@ -4,7 +4,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-
+import 'dart:io' as io;
+import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart';
+import 'dart:html' as html; // Import específico para Flutter Web
+import 'package:flutter/foundation.dart' show kIsWeb; // Importa o kIsWeb
 //interacao ---  https://run.mocky.io/v3/f8ec33c1-7416-436e-be16-16ff924e5656
 
 class RelatorioScreen extends StatefulWidget {
@@ -16,7 +20,7 @@ class RelatorioScreen extends StatefulWidget {
 }
 
 class _RelatorioScreenState extends State<RelatorioScreen> {
-  final String UrlBase = 'https://bb21-200-129-242-3.ngrok-free.app';  
+  final String UrlBase = 'http://localhost:5092';  
   List<dynamic> relatorios = [];
   List<dynamic> filteredRelatorios = [];
   int currentPage = 0;
@@ -87,6 +91,86 @@ if (data != null && data is List) {
     throw Exception('Erro ao carregar interações');
   }
 }
+
+Future<void> fetchRelatorio2(int checklistId) async {
+  try {
+    final response = await http.get(
+      Uri.parse('${UrlBase}/checklist/relatorio-geral/$checklistId'),
+      headers: {
+        'Authorization': 'Bearer ${widget.token}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final content = response.bodyBytes; // Conteúdo do PDF em bytes
+      final filename = 'RelatorioChecklist_$checklistId.pdf';
+
+      if (kIsWeb) {
+        // Para a Web, usar HTML API para download
+        final blob = html.Blob([content], 'application/pdf');
+        final url = html.Url.createObjectUrlFromBlob(blob);
+        final anchor = html.document.createElement('a') as html.AnchorElement
+          ..href = url
+          ..style.display = 'none'
+          ..download = filename;
+        html.document.body!.children.add(anchor);
+        anchor.click();
+        html.document.body!.children.remove(anchor);
+        html.Url.revokeObjectUrl(url);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'PDF baixado com sucesso!',
+              style: TextStyle(color: Colors.black),
+            ),
+            backgroundColor: Colors.greenAccent,
+          ),
+        );
+      } else {
+        // Para plataformas móveis e desktop
+        final directory = await getApplicationDocumentsDirectory();
+        final filePath = '${directory.path}/$filename';
+        final file = io.File(filePath);
+
+        await file.writeAsBytes(content);
+        await OpenFile.open(filePath);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'PDF baixado e aberto com sucesso!',
+              style: TextStyle(color: Colors.black),
+            ),
+            backgroundColor: Colors.greenAccent,
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Não há dados no checklist ou não foram respondidos',
+            style: TextStyle(color: Colors.black),
+          ),
+          backgroundColor: Colors.orangeAccent,
+        ),
+      );
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Erro ao baixar o PDF: $e',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.redAccent,
+      ),
+    );
+  }
+}
+
 Future<void> fetchRelatorio(int checklistId) async {
   try {
     print(checklistId);
@@ -289,7 +373,7 @@ Widget build(BuildContext context) {
                                               child: IconButton(
                                                 icon: Icon(Icons.picture_as_pdf),
                                                 color: Colors.black,
-                                                onPressed: () => fetchRelatorio(filteredRelatorios[actualIndex]['id']),
+                                                onPressed: () => fetchRelatorio2(filteredRelatorios[actualIndex]['id']),
                                               ),
                                             ),
                                           ),
@@ -368,5 +452,6 @@ Widget build(BuildContext context) {
     ),
   );
 }
+
 
 }
